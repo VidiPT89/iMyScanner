@@ -68,6 +68,24 @@ final class DocumentDetailViewModel: ObservableObject {
         isSharePresented = true
     }
 
+    func prepareWordShare() {
+        guard let url = DocxExportService.shared.generateDocx(for: document) else { return }
+        shareItems = [url]
+        isSharePresented = true
+    }
+
+    func addTag(_ tag: String) {
+        let trimmed = tag.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, !document.tags.contains(where: { $0.caseInsensitiveCompare(trimmed) == .orderedSame }) else { return }
+        document.tags.append(trimmed)
+        commit()
+    }
+
+    func removeTag(_ tag: String) {
+        document.tags.removeAll { $0 == tag }
+        commit()
+    }
+
     private func commit() {
         document.updatedAt = Date()
         onUpdate(document)

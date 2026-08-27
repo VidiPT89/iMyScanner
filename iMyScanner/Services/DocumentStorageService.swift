@@ -8,6 +8,7 @@ final class DocumentStorageService {
 
     private let fileManager = FileManager.default
     private let indexFileName = "documents_index.json"
+    private let foldersFileName = "folders_index.json"
 
     private lazy var documentsDirectory: URL = {
         let url = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -22,8 +23,30 @@ final class DocumentStorageService {
         return url
     }()
 
+    private lazy var importedFilesDirectory: URL = {
+        let url = documentsDirectory.appendingPathComponent("ImportedFiles", isDirectory: true)
+        if !fileManager.fileExists(atPath: url.path) {
+            try? fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+        }
+        return url
+    }()
+
     private var indexURL: URL {
         documentsDirectory.appendingPathComponent(indexFileName)
+    }
+
+    private var foldersURL: URL {
+        documentsDirectory.appendingPathComponent(foldersFileName)
+    }
+
+    func loadFolders() -> [DocumentFolder] {
+        guard let data = try? Data(contentsOf: foldersURL) else { return [] }
+        return (try? JSONDecoder().decode([DocumentFolder].self, from: data)) ?? []
+    }
+
+    func saveFolders(_ folders: [DocumentFolder]) {
+        guard let data = try? JSONEncoder().encode(folders) else { return }
+        try? data.write(to: foldersURL, options: .atomic)
     }
 
     func loadDocuments() -> [ScanDocument] {
@@ -64,5 +87,37 @@ final class DocumentStorageService {
                 deleteImage(fileName: page.editedFileName)
             }
         }
+    }
+
+    // MARK: - Imported files (Browse Files: non-image, non-PDF documents)
+
+    /// Copies a picked file into the app's own storage, avoiding name
+    /// collisions, and returns the name it was stored under.
+    @discardableResult
+    func copyImportedFile(from sourceURL: URL) -> String? {
+        let originalName = sourceURL.lastPathComponent
+        let ext = sourceURL.pathExtension
+        let base = sourceURL.deletingPathExtension().lastPathComponent
+        var candidateName = originalName
+        var counter = 1
+        while fileManager.fileExists(atPath: importedFilesDirectory.appendingPathComponent(candidateName).path) {
+            candidateName = ext.isEmpty ? "\(base) \(counter)" : "\(base) \(counter).\(ext)"
+            counter += 1
+        }
+        let destination = importedFilesDirectory.appendingPathComponent(candidateName)
+        do {
+            try fileManager.copyItem(at: sourceURL, to: destination)
+            return candidateName
+        } catch {
+            return nil
+        }
+    }
+
+    func importedFileURL(fileName: String) -> URL {
+        importedFilesDirectory.appendingPathComponent(fileName)
+    }
+
+    func deleteImportedFile(fileName: String) {
+        try? fileManager.removeItem(at: importedFileURL(fileName: fileName))
     }
 }

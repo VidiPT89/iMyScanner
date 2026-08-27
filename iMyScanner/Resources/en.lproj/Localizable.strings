@@ -16,15 +16,36 @@
 "documents.scan" = "Scan Document";
 "documents.empty.title" = "No scans yet";
 "documents.empty.subtitle" = "Tap Scan Document to capture your first page.";
+"documents.search.placeholder" = "Search by name or tag";
+"documents.source.camera" = "Scan with Camera";
+"documents.source.photos" = "Choose Photos";
+"documents.source.files" = "Browse Files";
 
 /* Document */
 "document.defaultName" = "Scan";
 "document.page.singular" = "1 page";
 "document.page.plural" = "%d pages";
+"document.importedFile" = "Imported File";
 "document.addPages" = "Add Pages";
 "document.exportPDF" = "Export as PDF";
 "document.exportImages" = "Export as Images";
+"document.exportWord" = "Export as Word";
 "document.name.placeholder" = "Document name";
+"document.tag.placeholder" = "Add a tag";
+
+/* Folders */
+"folders.title" = "Folders";
+"folders.all" = "All Documents";
+"folders.new" = "New Folder";
+"folders.name.placeholder" = "Folder name";
+"folders.moveTo" = "Move to Folder";
+
+/* Scan fallback */
+"scan.fallback.notice" = "Live scanning needs a physical device. Pick photos from your library instead.";
+
+/* Word export */
+"docx.pageHeading" = "Page %d";
+"docx.noText" = "No text was found on this page.";
 
 /* Editor */
 "editor.title" = "Edit Page";
@@ -64,6 +85,8 @@
 "action.apply" = "Apply";
 "action.delete" = "Delete";
 "action.rename" = "Rename";
+"action.add" = "Add";
+"action.share" = "Share";
 
 /* Permissions */
 "permission.camera" = "iMyScanner needs camera access to scan your documents.";

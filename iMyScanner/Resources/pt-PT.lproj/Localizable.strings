@@ -16,15 +16,36 @@
 "documents.scan" = "Digitalizar Documento";
 "documents.empty.title" = "Ainda sem digitalizações";
 "documents.empty.subtitle" = "Toque em Digitalizar Documento para capturar a sua primeira página.";
+"documents.search.placeholder" = "Pesquisar por nome ou etiqueta";
+"documents.source.camera" = "Digitalizar com a Câmara";
+"documents.source.photos" = "Escolher Fotografias";
+"documents.source.files" = "Procurar Ficheiros";
 
 /* Document */
 "document.defaultName" = "Digitalização";
 "document.page.singular" = "1 página";
 "document.page.plural" = "%d páginas";
+"document.importedFile" = "Ficheiro Importado";
 "document.addPages" = "Adicionar Páginas";
 "document.exportPDF" = "Exportar como PDF";
 "document.exportImages" = "Exportar como Imagens";
+"document.exportWord" = "Exportar como Word";
 "document.name.placeholder" = "Nome do documento";
+"document.tag.placeholder" = "Adicionar etiqueta";
+
+/* Folders */
+"folders.title" = "Pastas";
+"folders.all" = "Todos os Documentos";
+"folders.new" = "Nova Pasta";
+"folders.name.placeholder" = "Nome da pasta";
+"folders.moveTo" = "Mover para Pasta";
+
+/* Scan fallback */
+"scan.fallback.notice" = "A digitalização em direto requer um dispositivo físico. Escolha fotografias da sua biblioteca.";
+
+/* Word export */
+"docx.pageHeading" = "Página %d";
+"docx.noText" = "Não foi encontrado texto nesta página.";
 
 /* Editor */
 "editor.title" = "Editar Página";
@@ -64,6 +85,8 @@
 "action.apply" = "Aplicar";
 "action.delete" = "Eliminar";
 "action.rename" = "Renomear";
+"action.add" = "Adicionar";
+"action.share" = "Partilhar";
 
 /* Permissions */
 "permission.camera" = "O iMyScanner precisa de aceder à câmara para digitalizar os seus documentos.";

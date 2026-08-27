@@ -32,6 +32,12 @@
 		1B59CC1629434F3BBB1EBA83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA4C7F536959483F9BBD233A /* Assets.xcassets */; };
 		4032EE9E74644BDFA7FC8466 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0E287EE762174308BD4B24FB /* Localizable.strings */; };
 		C487F82BFDCC479284148BFC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6A5C987CB26E4C50B777BD75 /* InfoPlist.strings */; };
+		88C8CAD0DD73425FB7A77244 /* DocumentFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC00BE9E51E4F4DBC9EDC67 /* DocumentFolder.swift */; };
+		8DA178F785E8444198D14C59 /* DocxExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D7145B0C6C49248272E23A /* DocxExportService.swift */; };
+		BD617B7B78334CE88C281639 /* ZipArchiveBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF87EE779543409F40B449 /* ZipArchiveBuilder.swift */; };
+		0F1CD5B282C5417DB24DD05F /* FolderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0101A700574F76B47CFCAA /* FolderListView.swift */; };
+		A1B2C3D4E5F647A8B9C0D1E2 /* FileImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F647A8B9C0D1E3 /* FileImportService.swift */; };
+		A1B2C3D4E5F647A8B9C0D1E4 /* QuickLookPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F647A8B9C0D1E5 /* QuickLookPreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +70,12 @@
 		C0E9AECC72234B1F9BCEA3CC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		9CF457F1FC804A8EB45F5CFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A3E4BFB37947406096C660E9 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		1BC00BE9E51E4F4DBC9EDC67 /* DocumentFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentFolder.swift; sourceTree = "<group>"; };
+		84D7145B0C6C49248272E23A /* DocxExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocxExportService.swift; sourceTree = "<group>"; };
+		C8CF87EE779543409F40B449 /* ZipArchiveBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipArchiveBuilder.swift; sourceTree = "<group>"; };
+		9B0101A700574F76B47CFCAA /* FolderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderListView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F647A8B9C0D1E3 /* FileImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileImportService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F647A8B9C0D1E5 /* QuickLookPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +153,7 @@
 			children = (
 				98DB6D60F6534C0E96744507 /* ScanDocument.swift */,
 				E8EBAB0B8FA34F6CBDEFE66E /* ScanPage.swift */,
+				1BC00BE9E51E4F4DBC9EDC67 /* DocumentFolder.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -154,6 +167,9 @@
 				CE4C5DB99738445283F86BBA /* OCRService.swift */,
 				D1D6ED656F8D496CADE7D55D /* PDFExportService.swift */,
 				81B772C4CF2F4E2393730328 /* ScannerCoordinator.swift */,
+				84D7145B0C6C49248272E23A /* DocxExportService.swift */,
+				C8CF87EE779543409F40B449 /* ZipArchiveBuilder.swift */,
+				A1B2C3D4E5F647A8B9C0D1E3 /* FileImportService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -188,6 +204,8 @@
 				91B4B4E14B6045BB96AE106E /* OnboardingView.swift */,
 				8485A03B1244425E87E839EE /* PageEditorView.swift */,
 				3C4B3F58EF7646B39048AC2A /* SettingsView.swift */,
+				9B0101A700574F76B47CFCAA /* FolderListView.swift */,
+				A1B2C3D4E5F647A8B9C0D1E5 /* QuickLookPreviewView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -297,6 +315,12 @@
 				3EDD395C09DE49B98BD4D35D /* OnboardingView.swift in Sources */,
 				43C8A3DDA36F4A0DB36A0531 /* PageEditorView.swift in Sources */,
 				5F280A6352844F008B77C5DD /* SettingsView.swift in Sources */,
+				88C8CAD0DD73425FB7A77244 /* DocumentFolder.swift in Sources */,
+				8DA178F785E8444198D14C59 /* DocxExportService.swift in Sources */,
+				BD617B7B78334CE88C281639 /* ZipArchiveBuilder.swift in Sources */,
+				0F1CD5B282C5417DB24DD05F /* FolderListView.swift in Sources */,
+				A1B2C3D4E5F647A8B9C0D1E2 /* FileImportService.swift in Sources */,
+				A1B2C3D4E5F647A8B9C0D1E4 /* QuickLookPreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
