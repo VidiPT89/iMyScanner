@@ -1,0 +1,69 @@
+/* Onboarding */
+"onboarding.scan.title" = "Digitalize em Segundos";
+"onboarding.scan.subtitle" = "Aponte a câmara a qualquer documento e deixe a deteção automática de margens tratar do resto.";
+"onboarding.edit.title" = "Edite com Precisão";
+"onboarding.edit.subtitle" = "Corrija cantos, rode, reordene e elimine páginas com gestos simples.";
+"onboarding.enhance.title" = "Melhore no Dispositivo";
+"onboarding.enhance.subtitle" = "Aplique filtros a preto e branco, cinzento ou melhoramento automático, tudo offline.";
+"onboarding.privacy.title" = "Privacidade em Primeiro Lugar";
+"onboarding.privacy.subtitle" = "Tudo acontece no seu dispositivo. Nada é enviado para qualquer servidor.";
+"onboarding.next" = "Seguinte";
+"onboarding.start" = "Começar";
+"onboarding.skip" = "Saltar";
+
+/* Documents list */
+"documents.title" = "As Minhas Digitalizações";
+"documents.scan" = "Digitalizar Documento";
+"documents.empty.title" = "Ainda sem digitalizações";
+"documents.empty.subtitle" = "Toque em Digitalizar Documento para capturar a sua primeira página.";
+
+/* Document */
+"document.defaultName" = "Digitalização";
+"document.page.singular" = "1 página";
+"document.page.plural" = "%d páginas";
+"document.addPages" = "Adicionar Páginas";
+"document.exportPDF" = "Exportar como PDF";
+"document.exportImages" = "Exportar como Imagens";
+"document.name.placeholder" = "Nome do documento";
+
+/* Editor */
+"editor.title" = "Editar Página";
+"editor.crop" = "Recortar";
+"editor.rotate" = "Rodar";
+"editor.extractText" = "Extrair Texto";
+"editor.extractedText" = "Texto Extraído";
+"editor.noText" = "Não foi encontrado texto nesta página.";
+
+/* Filters */
+"filter.original" = "Original";
+"filter.blackAndWhite" = "Preto e Branco";
+"filter.grayscale" = "Cinzento";
+"filter.enhance" = "Melhorar";
+
+/* Settings */
+"settings.title" = "Definições";
+"settings.appearance" = "Aparência";
+"settings.theme" = "Tema";
+"settings.theme.dark" = "Escuro";
+"settings.theme.light" = "Claro";
+"settings.theme.system" = "Sistema";
+"settings.language" = "Idioma";
+"settings.about" = "Sobre";
+
+/* About */
+"about.version" = "Versão %@";
+"about.developer" = "Programador";
+"about.website" = "Website";
+"about.github" = "GitHub";
+
+/* Actions */
+"action.cancel" = "Cancelar";
+"action.save" = "Guardar";
+"action.done" = "Concluído";
+"action.close" = "Fechar";
+"action.apply" = "Aplicar";
+"action.delete" = "Eliminar";
+"action.rename" = "Renomear";
+
+/* Permissions */
+"permission.camera" = "O iMyScanner precisa de aceder à câmara para digitalizar os seus documentos.";

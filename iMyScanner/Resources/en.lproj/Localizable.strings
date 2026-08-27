@@ -1,0 +1,69 @@
+/* Onboarding */
+"onboarding.scan.title" = "Scan in Seconds";
+"onboarding.scan.subtitle" = "Point your camera at any document and let automatic edge detection do the work.";
+"onboarding.edit.title" = "Edit With Precision";
+"onboarding.edit.subtitle" = "Fix corners, rotate, reorder and delete pages with simple gestures.";
+"onboarding.enhance.title" = "Enhance On Device";
+"onboarding.enhance.subtitle" = "Apply black & white, grayscale or auto-enhance filters, fully offline.";
+"onboarding.privacy.title" = "Private By Design";
+"onboarding.privacy.subtitle" = "Everything happens on your device. Nothing is ever uploaded anywhere.";
+"onboarding.next" = "Next";
+"onboarding.start" = "Get Started";
+"onboarding.skip" = "Skip";
+
+/* Documents list */
+"documents.title" = "My Scans";
+"documents.scan" = "Scan Document";
+"documents.empty.title" = "No scans yet";
+"documents.empty.subtitle" = "Tap Scan Document to capture your first page.";
+
+/* Document */
+"document.defaultName" = "Scan";
+"document.page.singular" = "1 page";
+"document.page.plural" = "%d pages";
+"document.addPages" = "Add Pages";
+"document.exportPDF" = "Export as PDF";
+"document.exportImages" = "Export as Images";
+"document.name.placeholder" = "Document name";
+
+/* Editor */
+"editor.title" = "Edit Page";
+"editor.crop" = "Crop";
+"editor.rotate" = "Rotate";
+"editor.extractText" = "Extract Text";
+"editor.extractedText" = "Extracted Text";
+"editor.noText" = "No text was found on this page.";
+
+/* Filters */
+"filter.original" = "Original";
+"filter.blackAndWhite" = "Black & White";
+"filter.grayscale" = "Grayscale";
+"filter.enhance" = "Enhance";
+
+/* Settings */
+"settings.title" = "Settings";
+"settings.appearance" = "Appearance";
+"settings.theme" = "Theme";
+"settings.theme.dark" = "Dark";
+"settings.theme.light" = "Light";
+"settings.theme.system" = "System";
+"settings.language" = "Language";
+"settings.about" = "About";
+
+/* About */
+"about.version" = "Version %@";
+"about.developer" = "Developer";
+"about.website" = "Website";
+"about.github" = "GitHub";
+
+/* Actions */
+"action.cancel" = "Cancel";
+"action.save" = "Save";
+"action.done" = "Done";
+"action.close" = "Close";
+"action.apply" = "Apply";
+"action.delete" = "Delete";
+"action.rename" = "Rename";
+
+/* Permissions */
+"permission.camera" = "iMyScanner needs camera access to scan your documents.";
