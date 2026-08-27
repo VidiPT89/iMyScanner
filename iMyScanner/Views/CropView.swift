@@ -13,6 +13,7 @@ struct CropView: View {
     @Binding var detectionFailed: Bool
     var onAppear: () -> Void
     var onRequestAutoDetect: () -> Void
+    var onRequestReset: () -> Void
     let onCancel: () -> Void
     let onApply: (CropRect) -> Void
 
@@ -110,6 +111,7 @@ struct CropView: View {
                     onRequestAutoDetect()
                 }
                 iconButton(system: "arrow.up.left.and.arrow.down.right", label: L("crop.resetFull")) {
+                    onRequestReset()
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                         setCorners(.fullFrame, animated: true)
                     }

@@ -21,6 +21,14 @@ final class PageEditorViewModel: ObservableObject {
     /// only ever runs once automatically (the user can still re-run it
     /// manually via the crop tool's "Auto" button).
     private var hasAttemptedAutoDetection = false
+    /// Bumped on every `runEdgeDetection()` call and captured by that call's
+    /// completion handler. If the automatic first-open detection and a manual
+    /// "Auto" tap ever overlap (e.g. the user taps Auto while the slower
+    /// automatic run is still in flight), only the result whose token still
+    /// matches -- i.e. the most recently requested run -- is applied. An
+    /// older run finishing late is discarded instead of silently overriding
+    /// whatever the newer run (or the user) already set.
+    private var edgeDetectionToken = 0
 
     private let originalImage: UIImage?
     /// Downscaled copy of `originalImage` used for the interactive preview only.
@@ -95,6 +103,8 @@ final class PageEditorViewModel: ObservableObject {
     /// for the automatic first-open attempt, visible for an explicit tap.
     func runEdgeDetection(isManualRequest: Bool = true) {
         guard let source = previewSourceImage else { return }
+        edgeDetectionToken += 1
+        let requestToken = edgeDetectionToken
         isDetectingEdges = true
         // `CropView` reacts to `detectedCrop` via `onChange`, which only fires when the
         // published value actually differs from before. Detection on the same source
@@ -103,12 +113,21 @@ final class PageEditorViewModel: ObservableObject {
         detectedCrop = nil
         DocumentEdgeDetectionService.shared.detectDocumentQuad(in: source) { [weak self] crop in
             guard let self else { return }
+            // Discard a result from an older, superseded request (see `edgeDetectionToken`).
+            guard requestToken == self.edgeDetectionToken else { return }
             self.isDetectingEdges = false
             self.detectedCrop = crop
             if crop == nil && isManualRequest {
                 self.edgeDetectionFailed = true
             }
         }
+    }
+
+    /// Invalidates any in-flight detection so its result can never arrive
+    /// late and override the user's explicit "Full Frame" reset.
+    func discardPendingEdgeDetection() {
+        edgeDetectionToken += 1
+        isDetectingEdges = false
     }
 
     func extractText(completion: @escaping () -> Void = {}) {

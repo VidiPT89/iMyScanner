@@ -56,6 +56,7 @@ struct PageEditorView: View {
                         detectionFailed: $viewModel.edgeDetectionFailed,
                         onAppear: { viewModel.autoDetectEdgesIfNeeded() },
                         onRequestAutoDetect: { viewModel.runEdgeDetection() },
+                        onRequestReset: { viewModel.discardPendingEdgeDetection() },
                         onCancel: { viewModel.isCropping = false },
                         onApply: { crop in
                             viewModel.applyCrop(crop)
