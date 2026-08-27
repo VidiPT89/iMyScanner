@@ -86,25 +86,18 @@ struct CropView: View {
             }
             .background(Color.black)
 
-            if isDetecting {
-                HStack(spacing: 8) {
-                    ProgressView().tint(AppColor.accentAmber)
-                    Text(L("crop.detecting"))
-                        .font(AppTypography.caption())
-                        .foregroundStyle(.secondary)
+            // Always occupies the same height, whether or not it has anything to show:
+            // toggling this row in/out of the VStack (rather than just its content)
+            // would resize the GeometryReader above on every state change, snapping the
+            // preview image and crop handles to a new size/position with no animation --
+            // exactly the "jump" this status line is meant to report on, not cause.
+            statusRow
+                .frame(height: 32)
+                .task(id: detectionFailed) {
+                    guard detectionFailed else { return }
+                    try? await Task.sleep(nanoseconds: 2_500_000_000)
+                    detectionFailed = false
                 }
-                .padding(.vertical, 8)
-            } else if detectionFailed {
-                Text(L("crop.detectionFailed"))
-                    .font(AppTypography.caption())
-                    .foregroundStyle(.secondary)
-                    .padding(.vertical, 8)
-                    .transition(.opacity)
-                    .task {
-                        try? await Task.sleep(nanoseconds: 2_500_000_000)
-                        detectionFailed = false
-                    }
-            }
 
             HStack(spacing: 20) {
                 iconButton(system: "wand.and.stars", label: L("crop.auto")) {
@@ -132,6 +125,25 @@ struct CropView: View {
             .padding(AppMetrics.standardPadding)
         }
         .background(AppColor.backgroundBlack.ignoresSafeArea())
+    }
+
+    @ViewBuilder
+    private var statusRow: some View {
+        if isDetecting {
+            HStack(spacing: 8) {
+                ProgressView().tint(AppColor.accentAmber)
+                Text(L("crop.detecting"))
+                    .font(AppTypography.caption())
+                    .foregroundStyle(.secondary)
+            }
+        } else if detectionFailed {
+            Text(L("crop.detectionFailed"))
+                .font(AppTypography.caption())
+                .foregroundStyle(.secondary)
+                .transition(.opacity)
+        } else {
+            Color.clear
+        }
     }
 
     private func setCorners(_ crop: CropRect, animated: Bool) {
