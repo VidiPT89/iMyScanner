@@ -58,6 +58,7 @@ struct DocumentsListView: View {
                     } label: {
                         Image(systemName: isGridLayout ? "list.bullet" : "square.grid.2x2")
                     }
+                    .accessibilityLabel(L("documents.toggleLayout"))
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -65,6 +66,7 @@ struct DocumentsListView: View {
                     } label: {
                         Image(systemName: "folder")
                     }
+                    .accessibilityLabel(L("folders.title"))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -72,6 +74,7 @@ struct DocumentsListView: View {
                     } label: {
                         Image(systemName: "gearshape")
                     }
+                    .accessibilityLabel(L("settings.title"))
                 }
             }
             .sheet(isPresented: $viewModel.isScannerPresented) {
@@ -152,6 +155,7 @@ struct DocumentsListView: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.secondary)
                 }
+                .accessibilityLabel(L("action.clear"))
             }
         }
         .padding(10)

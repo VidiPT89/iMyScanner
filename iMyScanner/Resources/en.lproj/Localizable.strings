@@ -20,6 +20,7 @@
 "documents.source.camera" = "Scan with Camera";
 "documents.source.photos" = "Choose Photos";
 "documents.source.files" = "Browse Files";
+"documents.toggleLayout" = "Toggle Layout";
 
 /* Document */
 "document.defaultName" = "Scan";
@@ -55,6 +56,11 @@
 "editor.extractedText" = "Extracted Text";
 "editor.noText" = "No text was found on this page.";
 
+/* Crop */
+"crop.auto" = "Auto";
+"crop.resetFull" = "Full Frame";
+"crop.detecting" = "Detecting edges…";
+
 /* Filters */
 "filter.original" = "Original";
 "filter.blackAndWhite" = "Black & White";
@@ -87,6 +93,8 @@
 "action.rename" = "Rename";
 "action.add" = "Add";
 "action.share" = "Share";
+"action.clear" = "Clear";
+"action.copy" = "Copy";
 
 /* Permissions */
 "permission.camera" = "iMyScanner needs camera access to scan your documents.";

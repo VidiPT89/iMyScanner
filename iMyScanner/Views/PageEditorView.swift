@@ -46,11 +46,15 @@ struct PageEditorView: View {
                     .fontWeight(.semibold)
                 }
             }
-            .fullScreenCover(isPresented: $viewModel.isCropping) {
+            .fullScreenCover(isPresented: $viewModel.isCropping, onDismiss: nil) {
                 if let base = viewModel.previewImage {
                     CropView(
                         image: base,
                         initialCrop: viewModel.page.cropRect ?? .fullFrame,
+                        detectedCrop: viewModel.detectedCrop,
+                        isDetecting: viewModel.isDetectingEdges,
+                        onAppear: { viewModel.autoDetectEdgesIfNeeded() },
+                        onRequestAutoDetect: { viewModel.runEdgeDetection() },
                         onCancel: { viewModel.isCropping = false },
                         onApply: { crop in
                             viewModel.applyCrop(crop)
@@ -145,6 +149,7 @@ private struct ExtractedTextView: View {
                     } label: {
                         Image(systemName: "doc.on.doc")
                     }
+                    .accessibilityLabel(L("action.copy"))
                 }
             }
         }

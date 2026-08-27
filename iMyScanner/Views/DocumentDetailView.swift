@@ -69,6 +69,7 @@ struct DocumentDetailView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityLabel(L("action.share"))
             }
         }
         .fullScreenCover(item: $editingPage) { page in
@@ -119,6 +120,7 @@ struct DocumentDetailView: View {
                                 } label: {
                                     Image(systemName: "xmark.circle.fill")
                                 }
+                                .accessibilityLabel(L("action.delete"))
                             }
                             .font(AppTypography.caption())
                             .padding(.horizontal, 10)

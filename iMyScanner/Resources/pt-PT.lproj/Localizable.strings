@@ -20,6 +20,7 @@
 "documents.source.camera" = "Digitalizar com a Câmara";
 "documents.source.photos" = "Escolher Fotografias";
 "documents.source.files" = "Procurar Ficheiros";
+"documents.toggleLayout" = "Alternar Esquema";
 
 /* Document */
 "document.defaultName" = "Digitalização";
@@ -55,6 +56,11 @@
 "editor.extractedText" = "Texto Extraído";
 "editor.noText" = "Não foi encontrado texto nesta página.";
 
+/* Crop */
+"crop.auto" = "Automático";
+"crop.resetFull" = "Imagem Completa";
+"crop.detecting" = "A detetar margens…";
+
 /* Filters */
 "filter.original" = "Original";
 "filter.blackAndWhite" = "Preto e Branco";
@@ -87,6 +93,8 @@
 "action.rename" = "Renomear";
 "action.add" = "Adicionar";
 "action.share" = "Partilhar";
+"action.clear" = "Limpar";
+"action.copy" = "Copiar";
 
 /* Permissions */
 "permission.camera" = "O iMyScanner precisa de aceder à câmara para digitalizar os seus documentos.";

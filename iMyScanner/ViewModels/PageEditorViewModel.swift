@@ -9,6 +9,15 @@ final class PageEditorViewModel: ObservableObject {
     @Published var recognizedText: String = ""
     @Published var isRecognizingText = false
     @Published var showTextSheet = false
+    /// Auto-detected quad offered as the initial crop the first time the
+    /// crop tool opens on a page with no crop applied yet. `nil` while
+    /// detection hasn't run or found nothing usable.
+    @Published var detectedCrop: CropRect?
+    @Published var isDetectingEdges = false
+    /// True once auto-detection has been attempted for this page, so it
+    /// only ever runs once automatically (the user can still re-run it
+    /// manually via the crop tool's "Auto" button).
+    private var hasAttemptedAutoDetection = false
 
     private let originalImage: UIImage?
     /// Downscaled copy of `originalImage` used for the interactive preview only.
@@ -65,6 +74,28 @@ final class PageEditorViewModel: ObservableObject {
     func resetCrop() {
         page.cropRect = nil
         renderPreview()
+    }
+
+    /// Kicks off automatic edge detection the first time the crop tool
+    /// opens for this page, if no crop has been applied yet. Never
+    /// overrides a crop the user already set (manually or from a prior
+    /// detection run).
+    func autoDetectEdgesIfNeeded() {
+        guard !hasAttemptedAutoDetection, page.cropRect == nil else { return }
+        hasAttemptedAutoDetection = true
+        runEdgeDetection()
+    }
+
+    /// Re-runs detection on demand (the crop tool's "Auto" button), even
+    /// if it already ran or a crop already exists.
+    func runEdgeDetection() {
+        guard let source = previewSourceImage else { return }
+        isDetectingEdges = true
+        DocumentEdgeDetectionService.shared.detectDocumentQuad(in: source) { [weak self] crop in
+            guard let self else { return }
+            self.isDetectingEdges = false
+            self.detectedCrop = crop
+        }
     }
 
     func extractText(completion: @escaping () -> Void = {}) {

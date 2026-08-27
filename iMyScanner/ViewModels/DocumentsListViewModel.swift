@@ -9,6 +9,7 @@ final class DocumentsListViewModel: ObservableObject {
     @Published var isPhotoPickerPresented = false
     @Published var isFilePickerPresented = false
     @Published var lastImportedDocument: ScanDocument?
+    @Published var isImportingFiles = false
     /// `nil` means "All Documents" (no folder filtering applied).
     @Published var selectedFolderId: UUID?
     @Published var searchText: String = ""
@@ -66,43 +67,57 @@ final class DocumentsListViewModel: ObservableObject {
     /// any other file type is stored as a distinct "imported file" entry.
     func importPickedFiles(_ urls: [URL]) {
         guard !urls.isEmpty else { return }
-        let outcome = FileImportService.shared.process(urls: urls)
-        var createdDocuments: [ScanDocument] = []
+        // Rendering PDF pages and decoding image files can take a real
+        // amount of time for large or multi-file imports; doing that
+        // synchronously here would freeze the UI thread while the picker
+        // sheet dismisses. Run the whole outcome off the main thread and
+        // only touch published state once it's ready.
+        isImportingFiles = true
+        let selectedFolderId = self.selectedFolderId
+        let defaultTitle = self.defaultTitle()
+        DispatchQueue.global(qos: .userInitiated).async { [storage] in
+            let outcome = FileImportService.shared.process(urls: urls)
+            var createdDocuments: [ScanDocument] = []
 
-        if !outcome.combinedImages.isEmpty {
-            var pages: [ScanPage] = []
-            for image in outcome.combinedImages {
-                let fileName = storage.saveImage(image)
-                pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
+            if !outcome.combinedImages.isEmpty {
+                var pages: [ScanPage] = []
+                for image in outcome.combinedImages {
+                    let fileName = storage.saveImage(image)
+                    pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
+                }
+                createdDocuments.append(ScanDocument(title: defaultTitle, pages: pages, folderId: selectedFolderId))
             }
-            createdDocuments.append(ScanDocument(title: defaultTitle(), pages: pages, folderId: selectedFolderId))
-        }
 
-        for pdf in outcome.pdfDocuments {
-            var pages: [ScanPage] = []
-            for image in pdf.images {
-                let fileName = storage.saveImage(image)
-                pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
+            for pdf in outcome.pdfDocuments {
+                var pages: [ScanPage] = []
+                for image in pdf.images {
+                    let fileName = storage.saveImage(image)
+                    pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
+                }
+                createdDocuments.append(ScanDocument(title: pdf.title, pages: pages, folderId: selectedFolderId))
             }
-            createdDocuments.append(ScanDocument(title: pdf.title, pages: pages, folderId: selectedFolderId))
-        }
 
-        for imported in outcome.importedFiles {
-            let title = (imported.originalName as NSString).deletingPathExtension
-            createdDocuments.append(
-                ScanDocument(
-                    title: title.isEmpty ? imported.originalName : title,
-                    folderId: selectedFolderId,
-                    documentKind: .importedFile(originalFilename: imported.originalName),
-                    importedFileName: imported.storageName
+            for imported in outcome.importedFiles {
+                let title = (imported.originalName as NSString).deletingPathExtension
+                createdDocuments.append(
+                    ScanDocument(
+                        title: title.isEmpty ? imported.originalName : title,
+                        folderId: selectedFolderId,
+                        documentKind: .importedFile(originalFilename: imported.originalName),
+                        importedFileName: imported.storageName
+                    )
                 )
-            )
-        }
+            }
 
-        guard !createdDocuments.isEmpty else { return }
-        documents.insert(contentsOf: createdDocuments, at: 0)
-        persist()
-        lastImportedDocument = createdDocuments.first
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.isImportingFiles = false
+                guard !createdDocuments.isEmpty else { return }
+                self.documents.insert(contentsOf: createdDocuments, at: 0)
+                self.persist()
+                self.lastImportedDocument = createdDocuments.first
+            }
+        }
     }
 
     func deleteDocument(_ document: ScanDocument) {
