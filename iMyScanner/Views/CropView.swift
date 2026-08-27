@@ -10,6 +10,7 @@ struct CropView: View {
     /// finish after `onAppear`).
     var detectedCrop: CropRect?
     var isDetecting: Bool
+    @Binding var detectionFailed: Bool
     var onAppear: () -> Void
     var onRequestAutoDetect: () -> Void
     let onCancel: () -> Void
@@ -73,13 +74,13 @@ struct CropView: View {
                     onAppear()
                 }
                 .onChange(of: detectedCrop) { newValue in
-                    // Only auto-apply when the user hasn't started with a
-                    // real crop already (still at the full-frame default);
-                    // a manual on-demand re-run always applies.
+                    // `detectedCrop` only ever changes as the result of an explicit
+                    // `runEdgeDetection()` call -- either the one-time automatic run on
+                    // first open (already gated in the view model so it never overrides
+                    // an existing crop) or the user tapping "Auto" here. Both cases should
+                    // move the handles; there's nothing left to re-check here.
                     guard let newValue else { return }
-                    if initialCrop == .fullFrame {
-                        setCorners(newValue, animated: true)
-                    }
+                    setCorners(newValue, animated: true)
                 }
             }
             .background(Color.black)
@@ -92,6 +93,16 @@ struct CropView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
+            } else if detectionFailed {
+                Text(L("crop.detectionFailed"))
+                    .font(AppTypography.caption())
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 8)
+                    .transition(.opacity)
+                    .task {
+                        try? await Task.sleep(nanoseconds: 2_500_000_000)
+                        detectionFailed = false
+                    }
             }
 
             HStack(spacing: 20) {

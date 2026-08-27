@@ -60,6 +60,7 @@
 "crop.auto" = "Auto";
 "crop.resetFull" = "Full Frame";
 "crop.detecting" = "Detecting edges…";
+"crop.detectionFailed" = "No document edges found — adjust the corners manually.";
 
 /* Filters */
 "filter.original" = "Original";

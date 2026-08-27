@@ -60,6 +60,7 @@
 "crop.auto" = "Automático";
 "crop.resetFull" = "Imagem Completa";
 "crop.detecting" = "A detetar margens…";
+"crop.detectionFailed" = "Não foi encontrado nenhum documento — ajusta os cantos manualmente.";
 
 /* Filters */
 "filter.original" = "Original";

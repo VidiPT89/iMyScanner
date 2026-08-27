@@ -14,6 +14,9 @@ final class PageEditorViewModel: ObservableObject {
     /// detection hasn't run or found nothing usable.
     @Published var detectedCrop: CropRect?
     @Published var isDetectingEdges = false
+    /// Set for a moment whenever an on-demand ("Auto" button) detection finds no usable
+    /// rectangle, so the crop tool can tell the user instead of silently doing nothing.
+    @Published var edgeDetectionFailed = false
     /// True once auto-detection has been attempted for this page, so it
     /// only ever runs once automatically (the user can still re-run it
     /// manually via the crop tool's "Auto" button).
@@ -83,18 +86,28 @@ final class PageEditorViewModel: ObservableObject {
     func autoDetectEdgesIfNeeded() {
         guard !hasAttemptedAutoDetection, page.cropRect == nil else { return }
         hasAttemptedAutoDetection = true
-        runEdgeDetection()
+        runEdgeDetection(isManualRequest: false)
     }
 
     /// Re-runs detection on demand (the crop tool's "Auto" button), even
-    /// if it already ran or a crop already exists.
-    func runEdgeDetection() {
+    /// if it already ran or a crop already exists. `isManualRequest` controls
+    /// whether a "no document found" failure is surfaced to the user: silent
+    /// for the automatic first-open attempt, visible for an explicit tap.
+    func runEdgeDetection(isManualRequest: Bool = true) {
         guard let source = previewSourceImage else { return }
         isDetectingEdges = true
+        // `CropView` reacts to `detectedCrop` via `onChange`, which only fires when the
+        // published value actually differs from before. Detection on the same source
+        // image is deterministic, so a re-run can produce an identical `CropRect` -- reset
+        // to `nil` first so the next assignment always registers as a change, even then.
+        detectedCrop = nil
         DocumentEdgeDetectionService.shared.detectDocumentQuad(in: source) { [weak self] crop in
             guard let self else { return }
             self.isDetectingEdges = false
             self.detectedCrop = crop
+            if crop == nil && isManualRequest {
+                self.edgeDetectionFailed = true
+            }
         }
     }
 

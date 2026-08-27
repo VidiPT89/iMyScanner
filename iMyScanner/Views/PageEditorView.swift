@@ -53,6 +53,7 @@ struct PageEditorView: View {
                         initialCrop: viewModel.page.cropRect ?? .fullFrame,
                         detectedCrop: viewModel.detectedCrop,
                         isDetecting: viewModel.isDetectingEdges,
+                        detectionFailed: $viewModel.edgeDetectionFailed,
                         onAppear: { viewModel.autoDetectEdgesIfNeeded() },
                         onRequestAutoDetect: { viewModel.runEdgeDetection() },
                         onCancel: { viewModel.isCropping = false },
