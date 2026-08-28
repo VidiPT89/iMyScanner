@@ -8,7 +8,6 @@ struct DocumentDetailView: View {
     @State private var isScannerPresented = false
     @State private var isPhotoPickerPresented = false
     @State private var newTag = ""
-    @Environment(\.editMode) private var editMode
 
     init(document: ScanDocument, onUpdate: @escaping (ScanDocument) -> Void) {
         _viewModel = StateObject(wrappedValue: DocumentDetailViewModel(document: document, onUpdate: onUpdate))
@@ -35,41 +34,46 @@ struct DocumentDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button {
-                        newTitle = viewModel.document.title
-                        isRenaming = true
-                    } label: {
-                        Label(L("action.rename"), systemImage: "pencil")
-                    }
-                    Button {
-                        if isDocumentScanningAvailable() {
-                            isScannerPresented = true
-                        } else {
-                            isPhotoPickerPresented = true
+                if viewModel.isExporting {
+                    ProgressView()
+                        .accessibilityLabel(L("document.exporting"))
+                } else {
+                    Menu {
+                        Button {
+                            newTitle = viewModel.document.title
+                            isRenaming = true
+                        } label: {
+                            Label(L("action.rename"), systemImage: "pencil")
+                        }
+                        Button {
+                            if isDocumentScanningAvailable() {
+                                isScannerPresented = true
+                            } else {
+                                isPhotoPickerPresented = true
+                            }
+                        } label: {
+                            Label(L("document.addPages"), systemImage: "plus.rectangle.on.rectangle")
+                        }
+                        Button {
+                            viewModel.preparePDFShare()
+                        } label: {
+                            Label(L("document.exportPDF"), systemImage: "doc.richtext")
+                        }
+                        Button {
+                            viewModel.prepareImagesShare()
+                        } label: {
+                            Label(L("document.exportImages"), systemImage: "photo.on.rectangle")
+                        }
+                        Button {
+                            viewModel.prepareWordShare()
+                        } label: {
+                            Label(L("document.exportWord"), systemImage: "doc.text")
                         }
                     } label: {
-                        Label(L("document.addPages"), systemImage: "plus.rectangle.on.rectangle")
+                        Image(systemName: "ellipsis.circle")
                     }
-                    Button {
-                        viewModel.preparePDFShare()
-                    } label: {
-                        Label(L("document.exportPDF"), systemImage: "doc.richtext")
-                    }
-                    Button {
-                        viewModel.prepareImagesShare()
-                    } label: {
-                        Label(L("document.exportImages"), systemImage: "photo.on.rectangle")
-                    }
-                    Button {
-                        viewModel.prepareWordShare()
-                    } label: {
-                        Label(L("document.exportWord"), systemImage: "doc.text")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
+                    .accessibilityLabel(L("action.share"))
                 }
-                .accessibilityLabel(L("action.share"))
             }
         }
         .fullScreenCover(item: $editingPage) { page in

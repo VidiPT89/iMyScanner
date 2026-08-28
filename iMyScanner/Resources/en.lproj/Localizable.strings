@@ -31,6 +31,7 @@
 "document.exportPDF" = "Export as PDF";
 "document.exportImages" = "Export as Images";
 "document.exportWord" = "Export as Word";
+"document.exporting" = "Exporting…";
 "document.name.placeholder" = "Document name";
 "document.tag.placeholder" = "Add a tag";
 
@@ -40,9 +41,6 @@
 "folders.new" = "New Folder";
 "folders.name.placeholder" = "Folder name";
 "folders.moveTo" = "Move to Folder";
-
-/* Scan fallback */
-"scan.fallback.notice" = "Live scanning needs a physical device. Pick photos from your library instead.";
 
 /* Word export */
 "docx.pageHeading" = "Page %d";
@@ -96,6 +94,3 @@
 "action.share" = "Share";
 "action.clear" = "Clear";
 "action.copy" = "Copy";
-
-/* Permissions */
-"permission.camera" = "iMyScanner needs camera access to scan your documents.";

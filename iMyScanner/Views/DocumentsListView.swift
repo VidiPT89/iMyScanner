@@ -7,8 +7,6 @@ struct DocumentsListView: View {
     @State private var navigateToDocument: ScanDocument?
     @State private var isDetailPresented = false
     @State private var showFolders = false
-    @State private var isAddingFolder = false
-    @State private var newFolderName = ""
     @State private var quickLookDocument: ScanDocument?
     @State private var isSharingImportedFile = false
     @State private var importedFileShareURL: URL?

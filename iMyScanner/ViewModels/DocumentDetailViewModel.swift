@@ -7,6 +7,10 @@ final class DocumentDetailViewModel: ObservableObject {
     @Published var isSharePresented = false
     @Published var shareItems: [Any] = []
     @Published var isAddingPages = false
+    /// True while a PDF/Word/image export is being generated off the main
+    /// thread. Multi-page documents can take a noticeable amount of time to
+    /// render and zip, so the UI surfaces this instead of appearing to hang.
+    @Published var isExporting = false
 
     private let storage = DocumentStorageService.shared
     private let onUpdate: (ScanDocument) -> Void
@@ -56,22 +60,42 @@ final class DocumentDetailViewModel: ObservableObject {
     }
 
     func preparePDFShare() {
-        guard let url = PDFExportService.shared.generatePDF(for: document) else { return }
-        shareItems = [url]
-        isSharePresented = true
+        let snapshot = document
+        export { PDFExportService.shared.generatePDF(for: snapshot).map { [$0] } }
     }
 
     func prepareImagesShare() {
-        let urls = PDFExportService.shared.exportImages(for: document)
-        guard !urls.isEmpty else { return }
-        shareItems = urls
-        isSharePresented = true
+        let snapshot = document
+        export {
+            let urls = PDFExportService.shared.exportImages(for: snapshot)
+            return urls.isEmpty ? nil : urls
+        }
     }
 
     func prepareWordShare() {
-        guard let url = DocxExportService.shared.generateDocx(for: document) else { return }
-        shareItems = [url]
-        isSharePresented = true
+        let snapshot = document
+        export { DocxExportService.shared.generateDocx(for: snapshot).map { [$0] } }
+    }
+
+    /// Renders an export off the main thread: reading and re-encoding every
+    /// page's full-resolution image and, for PDFs, running PDFKit's layout
+    /// pass can take a real amount of time for multi-page documents, and
+    /// doing that synchronously on the main thread would freeze the UI while
+    /// the share sheet is about to appear. `makeURLs` must not touch
+    /// `self` — callers pass it a snapshot of whatever document state it needs.
+    private func export(_ makeURLs: @escaping () -> [URL]?) {
+        guard !isExporting else { return }
+        isExporting = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let urls = makeURLs()
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.isExporting = false
+                guard let urls, !urls.isEmpty else { return }
+                self.shareItems = urls
+                self.isSharePresented = true
+            }
+        }
     }
 
     func addTag(_ tag: String) {

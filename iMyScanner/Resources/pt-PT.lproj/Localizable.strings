@@ -31,6 +31,7 @@
 "document.exportPDF" = "Exportar como PDF";
 "document.exportImages" = "Exportar como Imagens";
 "document.exportWord" = "Exportar como Word";
+"document.exporting" = "A exportar…";
 "document.name.placeholder" = "Nome do documento";
 "document.tag.placeholder" = "Adicionar etiqueta";
 
@@ -40,9 +41,6 @@
 "folders.new" = "Nova Pasta";
 "folders.name.placeholder" = "Nome da pasta";
 "folders.moveTo" = "Mover para Pasta";
-
-/* Scan fallback */
-"scan.fallback.notice" = "A digitalização em direto requer um dispositivo físico. Escolha fotografias da sua biblioteca.";
 
 /* Word export */
 "docx.pageHeading" = "Página %d";
@@ -96,6 +94,3 @@
 "action.share" = "Partilhar";
 "action.clear" = "Limpar";
 "action.copy" = "Copiar";
-
-/* Permissions */
-"permission.camera" = "O iMyScanner precisa de aceder à câmara para digitalizar os seus documentos.";
