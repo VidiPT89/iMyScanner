@@ -74,6 +74,7 @@
 "settings.theme.light" = "Claro";
 "settings.theme.system" = "Sistema";
 "settings.language" = "Idioma";
+"settings.language.restartHint" = "Reinicia a app para a câmara do scanner, o seletor de ficheiros e a partilha ficarem também neste idioma.";
 "settings.about" = "Sobre";
 
 /* About */

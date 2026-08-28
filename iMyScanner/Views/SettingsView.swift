@@ -23,6 +23,12 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+
+                    if viewModel.showRestartHint {
+                        Text(L("settings.language.restartHint"))
+                            .font(AppTypography.caption())
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Section {

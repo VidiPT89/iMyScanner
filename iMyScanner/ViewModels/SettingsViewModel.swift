@@ -7,11 +7,16 @@ final class SettingsViewModel: ObservableObject {
         didSet { themeManager.option = themeOption }
     }
     @Published var language: AppLanguage {
-        didSet { localizationManager.language = language }
+        didSet { localizationManager.setLanguage(language) }
     }
+    /// Mirrors `LocalizationManager.pendingSystemLanguageChange`: true right after the
+    /// user switches language, so Settings can explain that a restart is needed for the
+    /// camera scanner / file picker / share sheet to fully match.
+    @Published var showRestartHint = false
 
     private let themeManager: ThemeManager
     private let localizationManager: LocalizationManager
+    private var cancellables = Set<AnyCancellable>()
 
     init(
         themeManager: ThemeManager = .shared,
@@ -21,6 +26,10 @@ final class SettingsViewModel: ObservableObject {
         self.localizationManager = localizationManager
         self.themeOption = themeManager.option
         self.language = localizationManager.language
+        localizationManager.$pendingSystemLanguageChange
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.showRestartHint = $0 }
+            .store(in: &cancellables)
     }
 
     var appVersion: String {
