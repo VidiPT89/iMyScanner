@@ -36,7 +36,7 @@ final class DocumentEdgeDetectionService {
                 return
             }
 
-            guard let results = request.results as? [VNRectangleObservation],
+            guard let results = request.results,
                   let best = results.max(by: { $0.confidence < $1.confidence }) else {
                 DispatchQueue.main.async { completion(nil) }
                 return

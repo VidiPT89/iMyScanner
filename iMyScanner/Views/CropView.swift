@@ -69,6 +69,7 @@ struct CropView: View {
                             .allowsHitTesting(false)
                     }
                 }
+                .coordinateSpace(name: "cropImage")
                 .animation(.easeOut(duration: 0.18), value: activeHandle)
                 .onAppear {
                     setCorners(initialCrop, animated: false)
@@ -196,12 +197,24 @@ struct CropView: View {
         .position(absPoint)
         .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isActive)
         .gesture(
-            DragGesture(minimumDistance: 0)
+            DragGesture(minimumDistance: 0, coordinateSpace: .named("cropImage"))
                 .onChanged { value in
+                    guard size.width > 0, size.height > 0 else { return }
+                    onRequestReset() // Invalidate detection before a manual adjustment.
                     activeHandle = id
                     let newX = min(max((value.location.x - origin.x) / size.width, 0), 1)
                     let newY = min(max((value.location.y - origin.y) / size.height, 0), 1)
-                    point.wrappedValue = CGPoint(x: newX, y: newY)
+                    let gap: CGFloat = 0.01
+                    switch id {
+                    case .topLeft:
+                        point.wrappedValue = CGPoint(x: min(newX, min(topRight.x, bottomRight.x) - gap), y: min(newY, min(bottomLeft.y, bottomRight.y) - gap))
+                    case .topRight:
+                        point.wrappedValue = CGPoint(x: max(newX, max(topLeft.x, bottomLeft.x) + gap), y: min(newY, min(bottomLeft.y, bottomRight.y) - gap))
+                    case .bottomLeft:
+                        point.wrappedValue = CGPoint(x: min(newX, min(topRight.x, bottomRight.x) - gap), y: max(newY, max(topLeft.y, topRight.y) + gap))
+                    case .bottomRight:
+                        point.wrappedValue = CGPoint(x: max(newX, max(topLeft.x, bottomLeft.x) + gap), y: max(newY, max(topLeft.y, topRight.y) + gap))
+                    }
                     magnifierLocation = value.location
                 }
                 .onEnded { _ in

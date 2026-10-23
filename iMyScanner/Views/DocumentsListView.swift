@@ -252,7 +252,7 @@ struct DocumentsListView: View {
                     RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius)
                         .fill(AppColor.surfaceDark)
                     if let first = document.pages.first,
-                       let image = DocumentStorageService.shared.loadImage(fileName: first.editedFileName) {
+                       let image = DocumentStorageService.shared.loadThumbnail(fileName: first.editedFileName) {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
@@ -292,7 +292,7 @@ struct DocumentsListView: View {
                     RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius)
                         .fill(AppColor.surfaceDark)
                     if let first = document.pages.first,
-                       let image = DocumentStorageService.shared.loadImage(fileName: first.editedFileName) {
+                       let image = DocumentStorageService.shared.loadThumbnail(fileName: first.editedFileName) {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()

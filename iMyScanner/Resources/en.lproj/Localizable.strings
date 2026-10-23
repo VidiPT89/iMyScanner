@@ -95,3 +95,7 @@
 "action.share" = "Share";
 "action.clear" = "Clear";
 "action.copy" = "Copy";
+
+"document.exportFailed" = "Unable to export all pages. Check the document and available storage, then try again.";
+
+"storage.failed" = "Unable to read or save the document. Check available storage and try again. Existing saved files have been preserved.";

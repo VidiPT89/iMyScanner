@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct iMyScannerApp: App {
+    @StateObject private var storage = DocumentStorageService.shared
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var localizationManager = LocalizationManager.shared
     @AppStorage("app.onboarding.completed") private var onboardingCompleted = false
@@ -20,6 +21,9 @@ struct iMyScannerApp: App {
             .preferredColorScheme(themeManager.preferredColorScheme)
             .id(localizationManager.language)
             .tint(AppColor.accentOrange)
+            .alert(L("storage.failed"), isPresented: $storage.operationFailed) {
+                Button(L("action.close"), role: .cancel) {}
+            }
         }
     }
 }

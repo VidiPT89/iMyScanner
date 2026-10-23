@@ -12,23 +12,18 @@ final class OCRService {
             return
         }
 
-        let request = VNRecognizeTextRequest { request, error in
-            guard error == nil,
-                  let observations = request.results as? [VNRecognizedTextObservation] else {
-                DispatchQueue.main.async { completion("") }
-                return
-            }
-            let lines = observations.compactMap { $0.topCandidates(1).first?.string }
-            DispatchQueue.main.async { completion(lines.joined(separator: "\n")) }
-        }
-
-        request.recognitionLevel = .accurate
-        request.usesLanguageCorrection = true
-        request.recognitionLanguages = ["pt-PT", "en-US"]
-
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
-            try? handler.perform([request])
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = true
+            request.recognitionLanguages = ["pt-PT", "en-US"]
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            let text: String
+            do {
+                try handler.perform([request])
+                text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+            } catch { text = "" }
+            DispatchQueue.main.async { completion(text) }
         }
     }
 }

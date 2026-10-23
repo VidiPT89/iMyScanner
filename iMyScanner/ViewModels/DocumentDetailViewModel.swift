@@ -6,43 +6,34 @@ final class DocumentDetailViewModel: ObservableObject {
     @Published var document: ScanDocument
     @Published var isSharePresented = false
     @Published var shareItems: [Any] = []
-    @Published var isAddingPages = false
+    @Published var exportFailed = false
     /// True while a PDF/Word/image export is being generated off the main
     /// thread. Multi-page documents can take a noticeable amount of time to
     /// render and zip, so the UI surfaces this instead of appearing to hang.
     @Published var isExporting = false
 
+    private var savedDocument: ScanDocument
     private let storage = DocumentStorageService.shared
-    private let onUpdate: (ScanDocument) -> Void
+    private let onUpdate: (ScanDocument) -> Bool
 
-    init(document: ScanDocument, onUpdate: @escaping (ScanDocument) -> Void) {
+    init(document: ScanDocument, onUpdate: @escaping (ScanDocument) -> Bool) {
         self.document = document
+        self.savedDocument = document
         self.onUpdate = onUpdate
     }
 
     func image(for page: ScanPage) -> UIImage? {
-        storage.loadImage(fileName: page.editedFileName)
+        storage.loadThumbnail(fileName: page.editedFileName)
     }
 
     func addPages(_ images: [UIImage]) {
-        for image in images {
-            let fileName = storage.saveImage(image)
-            document.pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
-        }
+        guard let pages = storage.savePages(images) else { return }
+        document.pages.append(contentsOf: pages)
         commit()
     }
 
     func deletePage(_ page: ScanPage) {
-        storage.deleteImage(fileName: page.originalFileName)
-        if page.editedFileName != page.originalFileName {
-            storage.deleteImage(fileName: page.editedFileName)
-        }
         document.pages.removeAll { $0.id == page.id }
-        commit()
-    }
-
-    func movePages(from source: IndexSet, to destination: Int) {
-        document.pages.move(fromOffsets: source, toOffset: destination)
         commit()
     }
 
@@ -91,7 +82,10 @@ final class DocumentDetailViewModel: ObservableObject {
             DispatchQueue.main.async {
                 guard let self else { return }
                 self.isExporting = false
-                guard let urls, !urls.isEmpty else { return }
+                guard let urls, !urls.isEmpty else {
+                    self.exportFailed = true
+                    return
+                }
                 self.shareItems = urls
                 self.isSharePresented = true
             }
@@ -112,6 +106,7 @@ final class DocumentDetailViewModel: ObservableObject {
 
     private func commit() {
         document.updatedAt = Date()
-        onUpdate(document)
+        if onUpdate(document) { savedDocument = document }
+        else { document = savedDocument }
     }
 }

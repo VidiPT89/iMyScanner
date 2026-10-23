@@ -11,13 +11,11 @@ import SwiftUI
 ///   AccentAmber    - dark: #E8A23A   light: #CC8A2A
 ///   BackgroundBlack- dark: #0E0C0B   light: #F7F4F1
 ///   SurfaceDark    - dark: #1B1714   light: #FFFFFF
-///   SurfaceLight   - dark: #262019   light: #EFE9E3
 enum AppColor {
     static let accentOrange = Color("AccentOrange")
     static let accentAmber = Color("AccentAmber")
     static let backgroundBlack = Color("BackgroundBlack")
     static let surfaceDark = Color("SurfaceDark")
-    static let surfaceLight = Color("SurfaceLight")
 }
 
 enum AppTypography {

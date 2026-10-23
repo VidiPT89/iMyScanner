@@ -36,8 +36,12 @@ final class DocxExportService {
 
         guard let zipData = ZipArchiveBuilder.build(entries: entries) else { return nil }
 
+        let exportDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        do { try FileManager.default.createDirectory(at: exportDirectory, withIntermediateDirectories: true) }
+        catch { return nil }
+
         let fileName = "\(sanitizedFileName(document.title)).docx"
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        let url = exportDirectory.appendingPathComponent(fileName)
         do {
             try zipData.write(to: url, options: .atomic)
             return url

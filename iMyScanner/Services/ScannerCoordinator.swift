@@ -103,8 +103,10 @@ struct PhotoLibraryPickerView: UIViewControllerRepresentable {
             for (index, provider) in providers.enumerated() where provider.canLoadObject(ofClass: UIImage.self) {
                 group.enter()
                 provider.loadObject(ofClass: UIImage.self) { object, _ in
-                    images[index] = object as? UIImage
-                    group.leave()
+                    DispatchQueue.main.async {
+                        images[index] = object as? UIImage
+                        group.leave()
+                    }
                 }
             }
 

@@ -8,9 +8,9 @@
 
 - ✅ Multi-page document scanning with automatic edge detection (VisionKit)
 - ✅ On-device text recognition (OCR) with copy-to-clipboard
-- ✅ Manual crop with draggable corner handles, 90° and free rotation
+- ✅ Manual crop with draggable corner handles, 90° rotation
 - ✅ Non-destructive filters: Original, Black & White, Grayscale, Auto Enhance
-- ✅ Page reordering and deletion within a document
+- ✅ Page deletion within a document
 - ✅ Export to PDF or images, with the native share sheet
 - ✅ Document management: rename, delete, grid/list view
 - ✅ Dark mode (default), Light mode, or follow system, with in-app toggle
@@ -59,6 +59,9 @@
 4. Export the finished document as a PDF or images, or share it directly
 
 ## 🧪 Testing
+
+Core regression checks: `sh scripts/test-core.sh`. Source checks: `sh scripts/check-types.sh`.
+See [review and validation limits](docs/review-2026-10-23.md).
 
 ```bash
 xcodebuild -project iMyScanner.xcodeproj -scheme iMyScanner -destination "generic/platform=iOS Simulator" build

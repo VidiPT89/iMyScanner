@@ -40,14 +40,16 @@ struct PageEditorView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(L("action.done")) {
-                        onDone(viewModel.finalizedPage())
-                        dismiss()
+                        if let page = viewModel.finalizedPage() {
+                            onDone(page)
+                            dismiss()
+                        }
                     }
                     .fontWeight(.semibold)
                 }
             }
             .fullScreenCover(isPresented: $viewModel.isCropping, onDismiss: nil) {
-                if let base = viewModel.previewImage {
+                if let base = viewModel.previewSourceImage {
                     CropView(
                         image: base,
                         initialCrop: viewModel.page.cropRect ?? .fullFrame,
@@ -57,7 +59,10 @@ struct PageEditorView: View {
                         onAppear: { viewModel.autoDetectEdgesIfNeeded() },
                         onRequestAutoDetect: { viewModel.runEdgeDetection() },
                         onRequestReset: { viewModel.discardPendingEdgeDetection() },
-                        onCancel: { viewModel.isCropping = false },
+                        onCancel: {
+                            viewModel.discardPendingEdgeDetection()
+                            viewModel.isCropping = false
+                        },
                         onApply: { crop in
                             viewModel.applyCrop(crop)
                             viewModel.isCropping = false

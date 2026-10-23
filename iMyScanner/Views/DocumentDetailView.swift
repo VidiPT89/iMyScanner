@@ -9,7 +9,7 @@ struct DocumentDetailView: View {
     @State private var isPhotoPickerPresented = false
     @State private var newTag = ""
 
-    init(document: ScanDocument, onUpdate: @escaping (ScanDocument) -> Void) {
+    init(document: ScanDocument, onUpdate: @escaping (ScanDocument) -> Bool) {
         _viewModel = StateObject(wrappedValue: DocumentDetailViewModel(document: document, onUpdate: onUpdate))
     }
 
@@ -103,6 +103,9 @@ struct DocumentDetailView: View {
         }
         .sheet(isPresented: $viewModel.isSharePresented) {
             ActivityShareSheet(items: viewModel.shareItems)
+        }
+        .alert(L("document.exportFailed"), isPresented: $viewModel.exportFailed) {
+            Button(L("action.close"), role: .cancel) {}
         }
         .alert(L("action.rename"), isPresented: $isRenaming) {
             TextField(L("document.name.placeholder"), text: $newTitle)

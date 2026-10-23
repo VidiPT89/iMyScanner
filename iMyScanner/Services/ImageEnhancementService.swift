@@ -63,7 +63,9 @@ final class ImageEnhancementService {
             .applying(CGAffineTransform(rotationAngle: radians))
             .integral.size
 
-        let renderer = UIGraphicsImageRenderer(size: rotatedSize)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = image.scale
+        let renderer = UIGraphicsImageRenderer(size: rotatedSize, format: format)
         return renderer.image { _ in
             guard let ctx = UIGraphicsGetCurrentContext() else { return }
             ctx.translateBy(x: rotatedSize.width / 2, y: rotatedSize.height / 2)
@@ -78,17 +80,21 @@ final class ImageEnhancementService {
     }
 
     func crop(_ image: UIImage, to cropRect: CropRect) -> UIImage {
-        guard let cgImage = image.cgImage else { return image }
-        let width = CGFloat(cgImage.width)
-        let height = CGFloat(cgImage.height)
-
-        let minX = min(cropRect.topLeft.x, cropRect.bottomLeft.x) * width
-        let maxX = max(cropRect.topRight.x, cropRect.bottomRight.x) * width
-        let minY = min(cropRect.topLeft.y, cropRect.topRight.y) * height
-        let maxY = max(cropRect.bottomLeft.y, cropRect.bottomRight.y) * height
-
-        let rect = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
-        guard let cropped = cgImage.cropping(to: rect) else { return image }
-        return UIImage(cgImage: cropped, scale: image.scale, orientation: image.imageOrientation)
+        guard let input = CIImage(image: image) else { return image }
+        let extent = input.extent
+        func vector(_ point: CGPoint) -> CGPoint {
+            CGPoint(x: extent.minX + point.x * extent.width,
+                     y: extent.minY + (1 - point.y) * extent.height)
+        }
+        let correction = CIFilter.perspectiveCorrection()
+        correction.inputImage = input
+        correction.topLeft = vector(cropRect.topLeft)
+        correction.topRight = vector(cropRect.topRight)
+        correction.bottomLeft = vector(cropRect.bottomLeft)
+        correction.bottomRight = vector(cropRect.bottomRight)
+        guard let output = correction.outputImage,
+              !output.extent.isEmpty, !output.extent.isInfinite,
+              let cgImage = context.createCGImage(output, from: output.extent) else { return image }
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: .up)
     }
 }

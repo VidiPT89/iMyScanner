@@ -5,19 +5,22 @@ import Foundation
 /// `.docx` files without pulling in a third-party archiving library.
 enum ZipArchiveBuilder {
     static func build(entries: [(name: String, data: Data)]) -> Data? {
+        guard entries.count <= Int(UInt16.max) else { return nil }
         var fileData = Data()
         var centralDirectory = Data()
         var offset: UInt32 = 0
 
         for entry in entries {
-            guard let nameData = entry.name.data(using: .utf8) else { return nil }
+            guard let nameData = entry.name.data(using: .utf8),
+                  nameData.count <= Int(UInt16.max), entry.data.count <= Int(UInt32.max),
+                  UInt64(offset) + UInt64(30 + nameData.count) + UInt64(entry.data.count) <= UInt64(UInt32.max) else { return nil }
             let crc = crc32(entry.data)
             let size = UInt32(entry.data.count)
 
             var localHeader = Data()
             localHeader.appendUInt32(0x04034b50)
             localHeader.appendUInt16(20)
-            localHeader.appendUInt16(0)
+            localHeader.appendUInt16(0x0800)
             localHeader.appendUInt16(0)
             localHeader.appendUInt16(0)
             localHeader.appendUInt16(0)
@@ -35,7 +38,7 @@ enum ZipArchiveBuilder {
             centralEntry.appendUInt32(0x02014b50)
             centralEntry.appendUInt16(20)
             centralEntry.appendUInt16(20)
-            centralEntry.appendUInt16(0)
+            centralEntry.appendUInt16(0x0800)
             centralEntry.appendUInt16(0)
             centralEntry.appendUInt16(0)
             centralEntry.appendUInt16(0)
@@ -55,6 +58,7 @@ enum ZipArchiveBuilder {
             offset += UInt32(localHeader.count + entry.data.count)
         }
 
+        guard centralDirectory.count <= Int(UInt32.max) else { return nil }
         var end = Data()
         end.appendUInt32(0x06054b50)
         end.appendUInt16(0)

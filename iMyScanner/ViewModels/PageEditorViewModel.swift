@@ -29,6 +29,7 @@ final class PageEditorViewModel: ObservableObject {
     /// older run finishing late is discarded instead of silently overriding
     /// whatever the newer run (or the user) already set.
     private var edgeDetectionToken = 0
+    private var renderGeneration = 0
 
     private let originalImage: UIImage?
     /// Downscaled copy of `originalImage` used for the interactive preview only.
@@ -36,7 +37,7 @@ final class PageEditorViewModel: ObservableObject {
     /// resolution on every button tap can spike memory enough to be jetsam-killed
     /// on a real device. Full resolution is only ever touched once, in
     /// `finalizedPage()`, when the user actually confirms the edit.
-    private let previewSourceImage: UIImage?
+    let previewSourceImage: UIImage?
     private let storage = DocumentStorageService.shared
     private let enhancement = ImageEnhancementService.shared
 
@@ -56,34 +57,33 @@ final class PageEditorViewModel: ObservableObject {
         guard largestSide > maxDimension else { return image }
         let scale = maxDimension / largestSide
         let targetSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
-        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
         return renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: targetSize))
         }
     }
 
     func selectFilter(_ filter: PageFilter) {
+        page.recognizedText = nil
+        recognizedText = ""
         page.filter = filter
         renderPreview()
     }
 
     func rotate90() {
+        page.recognizedText = nil
+        recognizedText = ""
         page.rotationDegrees = (page.rotationDegrees + 90).truncatingRemainder(dividingBy: 360)
         renderPreview()
     }
 
-    func applyFreeRotation(_ degrees: Double) {
-        page.rotationDegrees = degrees.truncatingRemainder(dividingBy: 360)
-        renderPreview()
-    }
-
     func applyCrop(_ cropRect: CropRect) {
+        discardPendingEdgeDetection()
+        page.recognizedText = nil
+        recognizedText = ""
         page.cropRect = cropRect
-        renderPreview()
-    }
-
-    func resetCrop() {
-        page.cropRect = nil
         renderPreview()
     }
 
@@ -131,10 +131,13 @@ final class PageEditorViewModel: ObservableObject {
     }
 
     func extractText(completion: @escaping () -> Void = {}) {
-        guard let image = previewImage else { return }
+        guard !isRecognizingText, let image = previewImage else { return }
         isRecognizingText = true
+        let generation = renderGeneration
         OCRService.shared.recognizeText(in: image) { [weak self] text in
             guard let self else { return }
+            self.isRecognizingText = false
+            guard generation == self.renderGeneration else { return }
             self.recognizedText = text
             self.page.recognizedText = text
             self.isRecognizingText = false
@@ -143,8 +146,8 @@ final class PageEditorViewModel: ObservableObject {
         }
     }
 
-    func finalizedPage() -> ScanPage {
-        guard let base = originalImage else { return page }
+    func finalizedPage() -> ScanPage? {
+        guard let base = originalImage else { return nil }
         var working = base
         if let crop = page.cropRect {
             working = enhancement.crop(working, to: crop)
@@ -153,12 +156,13 @@ final class PageEditorViewModel: ObservableObject {
             working = enhancement.rotate(working, degrees: page.rotationDegrees)
         }
         working = enhancement.applyFilter(page.filter, to: working)
-        let fileName = storage.saveImage(working)
+        guard let fileName = storage.saveImage(working) else { return nil }
         page.editedFileName = fileName
         return page
     }
 
     private func renderPreview() {
+        renderGeneration += 1
         guard let base = previewSourceImage else { return }
         var working = base
         if let crop = page.cropRect {

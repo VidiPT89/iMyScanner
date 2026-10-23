@@ -49,24 +49,20 @@ final class DocumentsListViewModel: ObservableObject {
 
     func createDocument(from images: [UIImage]) {
         guard !images.isEmpty else { return }
-        var pages: [ScanPage] = []
-        for image in images {
-            let fileName = storage.saveImage(image)
-            pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
-        }
+        guard let pages = storage.savePages(images), !pages.isEmpty else { return }
 
         let title = defaultTitle()
         let document = ScanDocument(title: title, pages: pages, folderId: selectedFolderId)
         documents.insert(document, at: 0)
         persist()
-        lastImportedDocument = document
+        lastImportedDocument = documents.first { $0.id == document.id }
     }
 
     /// Imports files picked via "Browse Files": images are combined into one
     /// new scanned document, each PDF becomes its own rendered document, and
     /// any other file type is stored as a distinct "imported file" entry.
     func importPickedFiles(_ urls: [URL]) {
-        guard !urls.isEmpty else { return }
+        guard !urls.isEmpty, !isImportingFiles else { return }
         // Rendering PDF pages and decoding image files can take a real
         // amount of time for large or multi-file imports; doing that
         // synchronously here would freeze the UI thread while the picker
@@ -75,26 +71,19 @@ final class DocumentsListViewModel: ObservableObject {
         isImportingFiles = true
         let selectedFolderId = self.selectedFolderId
         let defaultTitle = self.defaultTitle()
-        DispatchQueue.global(qos: .userInitiated).async { [storage] in
+        DispatchQueue.global(qos: .userInitiated).async { [storage, weak self] in
             let outcome = FileImportService.shared.process(urls: urls)
             var createdDocuments: [ScanDocument] = []
 
-            if !outcome.combinedImages.isEmpty {
-                var pages: [ScanPage] = []
-                for image in outcome.combinedImages {
-                    let fileName = storage.saveImage(image)
-                    pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
-                }
+            if !outcome.combinedImages.isEmpty,
+               let pages = storage.savePages(outcome.combinedImages) {
                 createdDocuments.append(ScanDocument(title: defaultTitle, pages: pages, folderId: selectedFolderId))
             }
 
             for pdf in outcome.pdfDocuments {
-                var pages: [ScanPage] = []
-                for image in pdf.images {
-                    let fileName = storage.saveImage(image)
-                    pages.append(ScanPage(originalFileName: fileName, editedFileName: fileName))
+                if let pages = storage.savePages(pdf.images), !pages.isEmpty {
+                    createdDocuments.append(ScanDocument(title: pdf.title, pages: pages, folderId: selectedFolderId))
                 }
-                createdDocuments.append(ScanDocument(title: pdf.title, pages: pages, folderId: selectedFolderId))
             }
 
             for imported in outcome.importedFiles {
@@ -112,19 +101,16 @@ final class DocumentsListViewModel: ObservableObject {
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 self.isImportingFiles = false
+                if outcome.hadFailures { storage.operationFailed = true }
                 guard !createdDocuments.isEmpty else { return }
                 self.documents.insert(contentsOf: createdDocuments, at: 0)
                 self.persist()
-                self.lastImportedDocument = createdDocuments.first
+                self.lastImportedDocument = createdDocuments.first.flatMap { created in self.documents.first { $0.id == created.id } }
             }
         }
     }
 
     func deleteDocument(_ document: ScanDocument) {
-        storage.deleteImages(for: document)
-        if let importedFileName = document.importedFileName {
-            storage.deleteImportedFile(fileName: importedFileName)
-        }
         documents.removeAll { $0.id == document.id }
         persist()
     }
@@ -138,11 +124,11 @@ final class DocumentsListViewModel: ObservableObject {
         persist()
     }
 
-    func updateDocument(_ document: ScanDocument) {
-        guard let index = documents.firstIndex(where: { $0.id == document.id }) else { return }
+    func updateDocument(_ document: ScanDocument) -> Bool {
+        guard let index = documents.firstIndex(where: { $0.id == document.id }) else { return false }
         documents[index] = document
         documents[index].updatedAt = Date()
-        persist()
+        return persist()
     }
 
     func moveDocument(_ document: ScanDocument, toFolder folderId: UUID?) {
@@ -170,23 +156,26 @@ final class DocumentsListViewModel: ObservableObject {
     }
 
     func deleteFolder(_ folder: DocumentFolder) {
-        folders.removeAll { $0.id == folder.id }
         for index in documents.indices where documents[index].folderId == folder.id {
             documents[index].folderId = nil
         }
+        guard persist() else { return }
+        folders.removeAll { $0.id == folder.id }
         if selectedFolderId == folder.id {
             selectedFolderId = nil
         }
         persistFolders()
-        persist()
     }
 
-    private func persist() {
-        storage.saveDocuments(documents)
+    @discardableResult
+    private func persist() -> Bool {
+        documents.sort { $0.updatedAt > $1.updatedAt }
+        if !storage.saveDocuments(documents) { loadDocuments(); return false }
+        return true
     }
 
     private func persistFolders() {
-        storage.saveFolders(folders)
+        if !storage.saveFolders(folders) { loadFolders() }
     }
 
     private func defaultTitle() -> String {

@@ -95,3 +95,7 @@
 "action.share" = "Partilhar";
 "action.clear" = "Limpar";
 "action.copy" = "Copiar";
+
+"document.exportFailed" = "Não foi possível exportar todas as páginas. Verifica o documento e o espaço disponível e tenta novamente.";
+
+"storage.failed" = "Não foi possível ler ou guardar o documento. Verifica o espaço disponível e tenta novamente. Os ficheiros já guardados foram preservados.";
