@@ -10,8 +10,11 @@ struct DocumentsListView: View {
     @State private var quickLookDocument: ScanDocument?
     @State private var isSharingImportedFile = false
     @State private var importedFileShareURL: URL?
+    @State private var documentPendingDeletion: ScanDocument?
 
     private let columns = [GridItem(.adaptive(minimum: 150), spacing: AppMetrics.cardSpacing)]
+    /// Room below the last card so the floating scan button never covers it.
+    private static let scanButtonClearance: CGFloat = 80
 
     var body: some View {
         NavigationStack {
@@ -33,6 +36,7 @@ struct DocumentsListView: View {
                                     }
                                 }
                                 .padding(AppMetrics.standardPadding)
+                                .padding(.bottom, Self.scanButtonClearance)
                             } else {
                                 LazyVStack(spacing: AppMetrics.cardSpacing) {
                                     ForEach(viewModel.filteredDocuments) { document in
@@ -40,6 +44,7 @@ struct DocumentsListView: View {
                                     }
                                 }
                                 .padding(AppMetrics.standardPadding)
+                                .padding(.bottom, Self.scanButtonClearance)
                             }
                         }
                         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.filteredDocuments)
@@ -129,6 +134,22 @@ struct DocumentsListView: View {
                         onUpdate: { viewModel.updateDocument($0) }
                     )
                 }
+            }
+            .confirmationDialog(
+                L("document.delete.confirmTitle"),
+                isPresented: Binding(
+                    get: { documentPendingDeletion != nil },
+                    set: { if !$0 { documentPendingDeletion = nil } }
+                ),
+                titleVisibility: .visible,
+                presenting: documentPendingDeletion
+            ) { document in
+                Button(L("action.delete"), role: .destructive) {
+                    withAnimation { viewModel.deleteDocument(document) }
+                }
+                Button(L("action.cancel"), role: .cancel) {}
+            } message: { _ in
+                Text(L("document.delete.confirmMessage"))
             }
             .onChange(of: viewModel.lastImportedDocument) { newValue in
                 if let newValue {
@@ -251,11 +272,8 @@ struct DocumentsListView: View {
                 ZStack(alignment: .topTrailing) {
                     RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius)
                         .fill(AppColor.surfaceDark)
-                    if let first = document.pages.first,
-                       let image = DocumentStorageService.shared.loadThumbnail(fileName: first.editedFileName) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
+                    if let first = document.pages.first {
+                        PageThumbnailImage(fileName: first.editedFileName, maxDimension: 400)
                             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius))
                     } else {
                         Image(systemName: "doc")
@@ -291,11 +309,8 @@ struct DocumentsListView: View {
                 ZStack(alignment: .topTrailing) {
                     RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius)
                         .fill(AppColor.surfaceDark)
-                    if let first = document.pages.first,
-                       let image = DocumentStorageService.shared.loadThumbnail(fileName: first.editedFileName) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
+                    if let first = document.pages.first {
+                        PageThumbnailImage(fileName: first.editedFileName, maxDimension: 200)
                             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius))
                     } else if document.isImportedFile {
                         Image(systemName: "doc.text.fill")
@@ -362,7 +377,7 @@ struct DocumentsListView: View {
             }
         }
         Button(role: .destructive) {
-            withAnimation { viewModel.deleteDocument(document) }
+            documentPendingDeletion = document
         } label: {
             Label(L("action.delete"), systemImage: "trash")
         }

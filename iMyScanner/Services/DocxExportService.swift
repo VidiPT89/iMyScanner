@@ -15,7 +15,9 @@ import Foundation
 final class DocxExportService {
     static let shared = DocxExportService()
 
-    func generateDocx(for document: ScanDocument) -> URL? {
+    /// `pageTexts` overrides the stored OCR text per page (same order as `document.pages`),
+    /// so callers can recognize pages that were never run through OCR before exporting.
+    func generateDocx(for document: ScanDocument, pageTexts: [String?]? = nil) -> URL? {
         let contentTypes = """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>
@@ -26,7 +28,7 @@ final class DocxExportService {
         <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>
         """
 
-        let documentXML = buildDocumentXML(for: document)
+        let documentXML = buildDocumentXML(for: document, pageTexts: pageTexts)
 
         let entries: [(name: String, data: Data)] = [
             ("[Content_Types].xml", Data(contentTypes.utf8)),
@@ -40,7 +42,7 @@ final class DocxExportService {
         do { try FileManager.default.createDirectory(at: exportDirectory, withIntermediateDirectories: true) }
         catch { return nil }
 
-        let fileName = "\(sanitizedFileName(document.title)).docx"
+        let fileName = "\(document.exportBaseName).docx"
         let url = exportDirectory.appendingPathComponent(fileName)
         do {
             try zipData.write(to: url, options: .atomic)
@@ -50,10 +52,11 @@ final class DocxExportService {
         }
     }
 
-    private func buildDocumentXML(for document: ScanDocument) -> String {
+    private func buildDocumentXML(for document: ScanDocument, pageTexts: [String?]?) -> String {
         var body = ""
         for (index, page) in document.pages.enumerated() {
-            let text = page.recognizedText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let stored = pageTexts.flatMap { index < $0.count ? $0[index] : nil } ?? page.recognizedText
+            let text = stored?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             let heading = String(format: L("docx.pageHeading"), index + 1)
             body += paragraph(text: heading, bold: true)
             if text.isEmpty {
@@ -87,11 +90,5 @@ final class DocxExportService {
             .replacingOccurrences(of: ">", with: "&gt;")
             .replacingOccurrences(of: "\"", with: "&quot;")
             .replacingOccurrences(of: "'", with: "&apos;")
-    }
-
-    private func sanitizedFileName(_ name: String) -> String {
-        let invalid = CharacterSet(charactersIn: "/\\?%*|\"<>:")
-        let cleaned = name.components(separatedBy: invalid).joined(separator: "-")
-        return cleaned.isEmpty ? "Scan" : cleaned
     }
 }

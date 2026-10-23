@@ -298,9 +298,11 @@ private struct MagnifierView: View {
             .resizable()
             .scaledToFit()
             .frame(width: imageSize.width * zoom, height: imageSize.height * zoom)
+            // The zoomed image starts out centred in the loupe's frame, so shift it by the
+            // focus point's distance from the image centre to bring that point to the middle.
             .offset(
-                x: diameter / 2 - relativeX * imageSize.width * zoom,
-                y: diameter / 2 - relativeY * imageSize.height * zoom
+                x: (0.5 - relativeX) * imageSize.width * zoom,
+                y: (0.5 - relativeY) * imageSize.height * zoom
             )
             .frame(width: diameter, height: diameter)
             .clipShape(Circle())

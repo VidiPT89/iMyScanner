@@ -5,7 +5,11 @@ import ImageIO
 
 /// Reads and writes documents and their page images to the app's
 /// Documents directory. All storage is local; nothing ever leaves the device.
-final class DocumentStorageService: ObservableObject {
+///
+/// `@unchecked Sendable`: background imports and exports call into this
+/// service. Its stored properties are immutable after `init` apart from main-queue-only
+/// state (`operationFailed`, `didRemoveOrphans`), and `NSCache` is thread-safe.
+final class DocumentStorageService: ObservableObject, @unchecked Sendable {
     @Published var operationFailed = false
 
     private func reportFailure() {
@@ -20,6 +24,9 @@ final class DocumentStorageService: ObservableObject {
     private let documentsDirectory: URL
     private let imagesDirectory: URL
     private let importedFilesDirectory: URL
+    private let thumbnailCache = NSCache<NSString, UIImage>()
+    /// Main-thread only (see `removeOrphanedFiles()`).
+    private var didRemoveOrphans = false
 
     private init() {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -57,6 +64,30 @@ final class DocumentStorageService: ObservableObject {
 
     func loadDocuments() -> [ScanDocument] {
         load([ScanDocument].self, from: indexURL, fallback: [])
+    }
+
+    /// Deletes page images and imported files no document references, e.g. left
+    /// behind by a crash between writing an image and saving the index. Reads
+    /// the index strictly and does nothing if it is missing or unreadable, so a
+    /// corrupt index can never wipe the library. Only files older than a day are
+    /// touched; call it at launch, before any import can start.
+    func removeOrphanedFiles() {
+        // Once per launch: the root view is rebuilt on a language change, and an
+        // import could be in flight by then.
+        guard !didRemoveOrphans else { return }
+        didRemoveOrphans = true
+        guard let data = try? Data(contentsOf: indexURL),
+              let documents = try? JSONDecoder().decode([ScanDocument].self, from: data) else { return }
+        let referenced = Set(documents.flatMap { $0.pages.flatMap { [$0.originalFileName, $0.editedFileName] } })
+            .union(documents.compactMap(\.importedFileName))
+        let cutoff = Date().addingTimeInterval(-24 * 60 * 60)
+        for directory in [imagesDirectory, importedFilesDirectory] {
+            let files = (try? fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.contentModificationDateKey])) ?? []
+            for file in files where !referenced.contains(file.lastPathComponent) {
+                let modified = (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+                if let modified, modified < cutoff { try? fileManager.removeItem(at: file) }
+            }
+        }
     }
 
     @discardableResult
@@ -131,7 +162,11 @@ final class DocumentStorageService: ObservableObject {
         return UIImage(data: data).map(normalizedImage)
     }
 
+    /// Page files are never rewritten in place (edits save a new name), so a
+    /// cached thumbnail can never go stale.
     func loadThumbnail(fileName: String, maxDimension: Int = 600) -> UIImage? {
+        let key = "\(fileName)#\(maxDimension)" as NSString
+        if let cached = thumbnailCache.object(forKey: key) { return cached }
         let url = imagesDirectory.appendingPathComponent(fileName)
         guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
               let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [
@@ -139,7 +174,9 @@ final class DocumentStorageService: ObservableObject {
                 kCGImageSourceCreateThumbnailWithTransform: true,
                 kCGImageSourceThumbnailMaxPixelSize: maxDimension
               ] as CFDictionary) else { return nil }
-        return UIImage(cgImage: image)
+        let thumbnail = UIImage(cgImage: image)
+        thumbnailCache.setObject(thumbnail, forKey: key)
+        return thumbnail
     }
 
     func deleteImage(fileName: String) {

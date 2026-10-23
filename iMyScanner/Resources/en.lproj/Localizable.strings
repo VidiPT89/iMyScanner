@@ -90,6 +90,10 @@
 "action.close" = "Close";
 "action.apply" = "Apply";
 "action.delete" = "Delete";
+"document.page.moveEarlier" = "Move Earlier";
+"document.page.moveLater" = "Move Later";
+"document.delete.confirmTitle" = "Delete this document?";
+"document.delete.confirmMessage" = "Its pages and files are removed from this device. This can't be undone.";
 "action.rename" = "Rename";
 "action.add" = "Add";
 "action.share" = "Share";

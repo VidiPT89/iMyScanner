@@ -22,14 +22,20 @@ final class DocumentDetailViewModel: ObservableObject {
         self.onUpdate = onUpdate
     }
 
-    func image(for page: ScanPage) -> UIImage? {
-        storage.loadThumbnail(fileName: page.editedFileName)
-    }
-
     func addPages(_ images: [UIImage]) {
         guard let pages = storage.savePages(images) else { return }
         document.pages.append(contentsOf: pages)
         commit()
+    }
+
+    func movePage(_ page: ScanPage, by offset: Int) {
+        guard document.movePage(id: page.id, by: offset) else { return }
+        commit()
+    }
+
+    func canMovePage(_ page: ScanPage, by offset: Int) -> Bool {
+        guard let index = document.pages.firstIndex(where: { $0.id == page.id }) else { return false }
+        return document.pages.indices.contains(index + offset)
     }
 
     func deletePage(_ page: ScanPage) {
@@ -63,9 +69,19 @@ final class DocumentDetailViewModel: ObservableObject {
         }
     }
 
+    /// Pages the user never ran "Extract Text" on are recognized now, so the
+    /// Word file is not just a list of empty pages.
     func prepareWordShare() {
         let snapshot = document
-        export { DocxExportService.shared.generateDocx(for: snapshot).map { [$0] } }
+        let storage = storage
+        export {
+            let texts: [String?] = snapshot.pages.map { page in
+                if let text = page.recognizedText { return text }
+                guard let cgImage = storage.loadImage(fileName: page.editedFileName)?.cgImage else { return nil }
+                return OCRService.shared.recognizeLines(in: cgImage).map(\.text).joined(separator: "\n")
+            }
+            return DocxExportService.shared.generateDocx(for: snapshot, pageTexts: texts).map { [$0] }
+        }
     }
 
     /// Renders an export off the main thread: reading and re-encoding every

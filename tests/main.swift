@@ -30,3 +30,5 @@ try FileManager.default.copyItem(at: first, to: output.appendingPathComponent("d
 let unicodeZip = ZipArchiveBuilder.build(entries: [("ação.txt", Data("ação".utf8))])!
 try unicodeZip.write(to: output.appendingPathComponent("unicode.zip"))
 for url in [first, second] { try FileManager.default.removeItem(at: url.deletingLastPathComponent()) }
+check(ScanDocument(title: "Fatura março: 2/3").exportBaseName == "Fatura março- 2-3", "Export names keep accents and replace unsafe characters")
+check(ScanDocument(title: "  ").exportBaseName == "Scan", "Blank titles export as Scan")

@@ -90,6 +90,10 @@
 "action.close" = "Fechar";
 "action.apply" = "Aplicar";
 "action.delete" = "Eliminar";
+"document.page.moveEarlier" = "Mover para Trás";
+"document.page.moveLater" = "Mover para a Frente";
+"document.delete.confirmTitle" = "Eliminar este documento?";
+"document.delete.confirmMessage" = "As páginas e ficheiros são removidos deste dispositivo. Esta ação não pode ser desfeita.";
 "action.rename" = "Renomear";
 "action.add" = "Adicionar";
 "action.share" = "Partilhar";

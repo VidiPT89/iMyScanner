@@ -10,8 +10,9 @@
 - ✅ On-device text recognition (OCR) with copy-to-clipboard
 - ✅ Manual crop with draggable corner handles, 90° rotation
 - ✅ Non-destructive filters: Original, Black & White, Grayscale, Auto Enhance
-- ✅ Page deletion within a document
-- ✅ Export to PDF or images, with the native share sheet
+- ✅ Reorder and delete pages within a document
+- ✅ Import photos and files: images, PDFs (one page per PDF page) and Word documents
+- ✅ Export to a searchable PDF (invisible OCR text layer, A4-width pages), images or Word, with the native share sheet
 - ✅ Document management: rename, delete, grid/list view
 - ✅ Dark mode (default), Light mode, or follow system, with in-app toggle
 - ✅ Full localization: Portuguese (Portugal) and English, switchable in-app
@@ -27,7 +28,8 @@
 | Scanning | VisionKit (`VNDocumentCameraViewController`) |
 | OCR | Vision (`VNRecognizeTextRequest`) |
 | Image Processing | Core Image |
-| PDF Export | PDFKit |
+| PDF Export | `UIGraphicsPDFRenderer` + Core Text (searchable text layer) |
+| PDF Import | PDFKit |
 | Minimum Target | iOS 16 |
 
 ## 🚀 Quick Start
@@ -56,11 +58,12 @@
 1. Tap the scan button and capture your document — edges are detected automatically
 2. Edit each page: crop, rotate, or apply a filter
 3. Extract text from any page with the OCR action
-4. Export the finished document as a PDF or images, or share it directly
+4. Reorder pages if needed, then export the document as a searchable PDF, images or Word, or share it directly
 
 ## 🧪 Testing
 
 Core regression checks: `sh scripts/test-core.sh`. Source checks: `sh scripts/check-types.sh`.
+Export/import checks on a booted iOS Simulator (needs `brew install poppler`): `sh scripts/test-exports.sh`.
 See [review and validation limits](docs/review-2026-10-23.md).
 
 ```bash

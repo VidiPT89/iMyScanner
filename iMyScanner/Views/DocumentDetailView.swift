@@ -161,12 +161,8 @@ struct DocumentDetailView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius)
                         .fill(AppColor.surfaceDark)
-                    if let image = viewModel.image(for: page) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius))
-                    }
+                    PageThumbnailImage(fileName: page.editedFileName)
+                        .clipShape(RoundedRectangle(cornerRadius: AppMetrics.smallCornerRadius))
                 }
                 .frame(height: 180)
                 .clipped()
@@ -179,6 +175,20 @@ struct DocumentDetailView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
+            if viewModel.canMovePage(page, by: -1) {
+                Button {
+                    withAnimation { viewModel.movePage(page, by: -1) }
+                } label: {
+                    Label(L("document.page.moveEarlier"), systemImage: "arrow.backward")
+                }
+            }
+            if viewModel.canMovePage(page, by: 1) {
+                Button {
+                    withAnimation { viewModel.movePage(page, by: 1) }
+                } label: {
+                    Label(L("document.page.moveLater"), systemImage: "arrow.forward")
+                }
+            }
             Button(role: .destructive) {
                 withAnimation { viewModel.deletePage(page) }
             } label: {
@@ -186,6 +196,34 @@ struct DocumentDetailView: View {
             }
         }
         .transition(.scale.combined(with: .opacity))
+    }
+}
+
+/// Page thumbnail decoded off the main thread. Decoding inside `body` ran on
+/// every re-render (each keystroke in the tag or search field) for every page.
+/// Anchored to the top, since documents are read from the top down.
+struct PageThumbnailImage: View {
+    let fileName: String
+    var maxDimension = 600
+    @State private var image: UIImage?
+
+    var body: some View {
+        // An overlay on a flexible clear view keeps the container's size and pins the
+        // overflowing fill image to the top (a `.frame(alignment: .top)` did not).
+        Color.clear
+            .overlay(alignment: .top) {
+                if let image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                }
+            }
+            .task(id: fileName) {
+                let fileName = fileName, maxDimension = maxDimension
+                image = await Task.detached(priority: .userInitiated) {
+                    DocumentStorageService.shared.loadThumbnail(fileName: fileName, maxDimension: maxDimension)
+                }.value
+            }
     }
 }
 

@@ -19,6 +19,7 @@ final class DocumentsListViewModel: ObservableObject {
     init() {
         loadDocuments()
         loadFolders()
+        storage.removeOrphanedFiles()
     }
 
     /// Documents matching the current folder selection and search text.
@@ -75,15 +76,12 @@ final class DocumentsListViewModel: ObservableObject {
             let outcome = FileImportService.shared.process(urls: urls)
             var createdDocuments: [ScanDocument] = []
 
-            if !outcome.combinedImages.isEmpty,
-               let pages = storage.savePages(outcome.combinedImages) {
-                createdDocuments.append(ScanDocument(title: defaultTitle, pages: pages, folderId: selectedFolderId))
+            if !outcome.combinedPages.isEmpty {
+                createdDocuments.append(ScanDocument(title: defaultTitle, pages: outcome.combinedPages, folderId: selectedFolderId))
             }
 
             for pdf in outcome.pdfDocuments {
-                if let pages = storage.savePages(pdf.images), !pages.isEmpty {
-                    createdDocuments.append(ScanDocument(title: pdf.title, pages: pages, folderId: selectedFolderId))
-                }
+                createdDocuments.append(ScanDocument(title: pdf.title, pages: pdf.pages, folderId: selectedFolderId))
             }
 
             for imported in outcome.importedFiles {

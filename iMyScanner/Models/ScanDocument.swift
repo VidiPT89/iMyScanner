@@ -107,6 +107,26 @@ struct ScanDocument: Identifiable, Codable {
     var subtitleDescription: String {
         isImportedFile ? L("document.importedFile") : pageCountDescription
     }
+
+    /// File name (without extension) used for every export. Keeps accents and
+    /// spaces, only replacing characters the Files app and share targets reject.
+    var exportBaseName: String {
+        let invalid = CharacterSet(charactersIn: "/\\?%*|\"<>:")
+        let cleaned = title.components(separatedBy: invalid).joined(separator: "-")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return cleaned.isEmpty ? "Scan" : cleaned
+    }
+
+    /// Moves the page `id` by `offset` positions (negative = earlier), clamped to the page list.
+    /// Returns false when nothing changed, so callers can skip a pointless save.
+    @discardableResult
+    mutating func movePage(id: ScanPage.ID, by offset: Int) -> Bool {
+        guard let from = pages.firstIndex(where: { $0.id == id }) else { return false }
+        let to = min(max(from + offset, 0), pages.count - 1)
+        guard to != from else { return false }
+        pages.insert(pages.remove(at: from), at: to)
+        return true
+    }
 }
 
 extension ScanDocument: Hashable {
