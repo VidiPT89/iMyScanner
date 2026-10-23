@@ -23,10 +23,10 @@
 		63C73F381924498090F09C36 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AF5112A1D04B54B3C97E37 /* SettingsViewModel.swift */; };
 		65C76C5C4F2C4AEE9387B2CD /* ScanPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EBAB0B8FA34F6CBDEFE66E /* ScanPage.swift */; };
 		7EE866AB6B734E47AB052007 /* ImageEnhancementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE49A9BF4844DF0B3A41027 /* ImageEnhancementService.swift */; };
-		9A0889E680D2498882F82E36 /* DocumentEdgeDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68515807A3ED435FB6149775 /* DocumentEdgeDetectionService.swift */; };
 		83408368AA7940CD995A02F5 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27A31F4CDF44A3DAEB3008A /* ThemeManager.swift */; };
 		88C8CAD0DD73425FB7A77244 /* DocumentFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC00BE9E51E4F4DBC9EDC67 /* DocumentFolder.swift */; };
 		8DA178F785E8444198D14C59 /* DocxExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D7145B0C6C49248272E23A /* DocxExportService.swift */; };
+		9A0889E680D2498882F82E36 /* DocumentEdgeDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68515807A3ED435FB6149775 /* DocumentEdgeDetectionService.swift */; };
 		9A27368D8B664E58B7CE7C6A /* DocumentStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98F20EE82CD4FF680A9E7CE /* DocumentStorageService.swift */; };
 		A1B2C3D4E5F647A8B9C0D1E2 /* FileImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F647A8B9C0D1E3 /* FileImportService.swift */; };
 		A1B2C3D4E5F647A8B9C0D1E4 /* QuickLookPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F647A8B9C0D1E5 /* QuickLookPreviewView.swift */; };
@@ -52,6 +52,7 @@
 		4D84106CF92F467B9E3C65D9 /* DocumentDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailViewModel.swift; sourceTree = "<group>"; };
 		4EB028762CFA422DBADA278C /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		4F39545AF28342A69342EADC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		68515807A3ED435FB6149775 /* DocumentEdgeDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEdgeDetectionService.swift; sourceTree = "<group>"; };
 		6F9BFE4F007243E2AED2D68E /* PageEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageEditorViewModel.swift; sourceTree = "<group>"; };
 		81B772C4CF2F4E2393730328 /* ScannerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerCoordinator.swift; sourceTree = "<group>"; };
 		8485A03B1244425E87E839EE /* PageEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageEditorView.swift; sourceTree = "<group>"; };
@@ -77,7 +78,6 @@
 		E716A32E72EA45C6AEDE2112 /* DocumentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsListView.swift; sourceTree = "<group>"; };
 		E8EBAB0B8FA34F6CBDEFE66E /* ScanPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanPage.swift; sourceTree = "<group>"; };
 		EBE49A9BF4844DF0B3A41027 /* ImageEnhancementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEnhancementService.swift; sourceTree = "<group>"; };
-		68515807A3ED435FB6149775 /* DocumentEdgeDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEdgeDetectionService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -460,9 +460,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iMyScanner/Resources/Info.plist;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "iMyScanner needs camera access to scan your documents.";
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -489,9 +490,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iMyScanner/Resources/Info.plist;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "iMyScanner needs camera access to scan your documents.";
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
