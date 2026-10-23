@@ -2,7 +2,7 @@ import UIKit
 import CoreText
 
 /// Builds exportable PDF files from a document's rendered page images.
-final class PDFExportService {
+final class PDFExportService: Sendable {
     static let shared = PDFExportService()
 
     /// A4 width in points. Each page keeps its scan's aspect ratio and full

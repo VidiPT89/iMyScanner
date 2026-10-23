@@ -2,6 +2,7 @@ import XCTest
 
 /// UI tests against the debug sample library (`-uiTestSampleData`).
 /// The store-screenshot tour only runs with `TEST_RUNNER_STORE_SHOTS=1`.
+@MainActor
 final class iMyScannerUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false

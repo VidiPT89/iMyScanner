@@ -1,19 +1,19 @@
 import SwiftUI
 
 /// Central brand palette and typography helpers for iMyScanner.
-/// Colors are approximations of the burnt orange / burnt amber / black
-/// palette used on ividi.dev, defined as Color Set assets so they adapt
-/// automatically between the app's dark and light appearances.
+/// Colors follow the app icon (scanner blue to violet on deep navy),
+/// defined as Color Set assets so they adapt automatically between the
+/// app's dark and light appearances.
 ///
-/// Approximate hex values (documented here since asset catalogs store
-/// them as raw components rather than hex strings):
-///   AccentOrange   - dark: #D9611B   light: #C9581A
-///   AccentAmber    - dark: #E8A23A   light: #CC8A2A
-///   BackgroundBlack- dark: #0E0C0B   light: #F7F4F1
-///   SurfaceDark    - dark: #1B1714   light: #FFFFFF
+/// Hex values (documented here since asset catalogs store them as raw
+/// components rather than hex strings):
+///   AccentPrimary   - dark: #3D7BEA   light: #2563D6
+///   AccentSecondary - dark: #A15CF0   light: #8B3FD9
+///   BackgroundBlack - dark: #0A0C17   light: #F4F5FA
+///   SurfaceDark     - dark: #161A2B   light: #FFFFFF
 enum AppColor {
-    static let accentOrange = Color("AccentOrange")
-    static let accentAmber = Color("AccentAmber")
+    static let accentPrimary = Color("AccentPrimary")
+    static let accentSecondary = Color("AccentSecondary")
     static let backgroundBlack = Color("BackgroundBlack")
     static let surfaceDark = Color("SurfaceDark")
 }
@@ -42,7 +42,7 @@ struct PrimaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .background(
                 LinearGradient(
-                    colors: [AppColor.accentOrange, AppColor.accentAmber],
+                    colors: [AppColor.accentPrimary, AppColor.accentSecondary],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
@@ -58,11 +58,11 @@ struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(AppTypography.headline())
-            .foregroundStyle(AppColor.accentOrange)
+            .foregroundStyle(AppColor.accentPrimary)
             .padding(.vertical, 12)
             .padding(.horizontal, 20)
             .frame(maxWidth: .infinity)
-            .background(AppColor.accentOrange.opacity(0.12))
+            .background(AppColor.accentPrimary.opacity(0.12))
             .clipShape(RoundedRectangle(cornerRadius: AppMetrics.cornerRadius, style: .continuous))
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)

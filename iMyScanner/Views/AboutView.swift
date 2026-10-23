@@ -15,7 +15,7 @@ struct AboutView: View {
                 Image(systemName: "doc.text.viewfinder")
                     .font(.system(size: 56, weight: .light))
                     .foregroundStyle(
-                        LinearGradient(colors: [AppColor.accentOrange, AppColor.accentAmber], startPoint: .topLeading, endPoint: .bottomTrailing)
+                        LinearGradient(colors: [AppColor.accentPrimary, AppColor.accentSecondary], startPoint: .topLeading, endPoint: .bottomTrailing)
                     )
                     .padding(.top, 32)
 
@@ -67,7 +67,7 @@ struct AboutView: View {
                 .foregroundStyle(.secondary)
             Spacer()
             Text(value)
-                .foregroundStyle(AppColor.accentOrange)
+                .foregroundStyle(AppColor.accentPrimary)
         }
         .font(AppTypography.body())
     }

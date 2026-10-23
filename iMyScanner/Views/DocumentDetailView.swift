@@ -133,8 +133,8 @@ struct DocumentDetailView: View {
                             .font(AppTypography.caption())
                             .padding(.horizontal, 10)
                             .padding(.vertical, 6)
-                            .background(AppColor.accentOrange.opacity(0.18))
-                            .foregroundStyle(AppColor.accentOrange)
+                            .background(AppColor.accentPrimary.opacity(0.18))
+                            .foregroundStyle(AppColor.accentPrimary)
                             .clipShape(Capsule())
                         }
                     }

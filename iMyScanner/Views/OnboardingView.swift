@@ -68,7 +68,7 @@ private struct OnboardingPageView: View {
                 .font(.system(size: 84, weight: .light))
                 .foregroundStyle(
                     LinearGradient(
-                        colors: [AppColor.accentOrange, AppColor.accentAmber],
+                        colors: [AppColor.accentPrimary, AppColor.accentSecondary],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )

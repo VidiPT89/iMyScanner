@@ -6,7 +6,7 @@ import PDFKit
 /// PDFs are rasterized page-by-page through PDFKit so they flow through the
 /// same `ScanPage` pipeline, and anything else is copied into storage as a
 /// distinct "imported file" entry with no rendering pipeline of its own.
-final class FileImportService {
+final class FileImportService: Sendable {
     static let shared = FileImportService()
 
     private let storage = DocumentStorageService.shared

@@ -1,7 +1,8 @@
 import Foundation
 import Combine
+import os
 
-enum AppLanguage: String, CaseIterable, Codable {
+enum AppLanguage: String, CaseIterable, Codable, Sendable {
     case english = "en"
     case portuguese = "pt-PT"
 
@@ -29,17 +30,25 @@ enum AppLanguage: String, CaseIterable, Codable {
 /// preferred language once at launch -- so this can only take full effect on
 /// next launch; the app's own screens update immediately via `language`
 /// regardless).
+@MainActor
 final class LocalizationManager: ObservableObject {
     static let shared = LocalizationManager()
 
-    private let storageKey = "app.language.option"
+    private nonisolated static let storageKey = "app.language.option"
     private static let systemPreferredLanguagesKey = "AppleLanguages"
 
     @Published var language: AppLanguage {
         didSet {
-            UserDefaults.standard.set(language.rawValue, forKey: storageKey)
+            UserDefaults.standard.set(language.rawValue, forKey: Self.storageKey)
+            let bundle = Self.bundle(for: language)
+            Self.currentBundle.withLock { $0 = bundle }
         }
     }
+
+    /// The bundle `L(_:)` reads from. Behind a lock so background work (exports,
+    /// imports) can look up strings while the main actor changes the language.
+    /// Seeded from the saved preference, so it is right even before `shared` exists.
+    private nonisolated static let currentBundle = OSAllocatedUnfairLock(initialState: bundle(for: savedLanguage()))
 
     /// True right after `setLanguage(_:)` actually changed the language, so the caller
     /// can tell the user a restart is needed for system screens to fully match.
@@ -54,21 +63,20 @@ final class LocalizationManager: ObservableObject {
         pendingSystemLanguageChange = true
     }
 
-    var bundle: Bundle {
-        LocalizationManager.bundle(for: language)
+    private init() {
+        language = Self.savedLanguage()
     }
 
-    private init() {
+    private nonisolated static func savedLanguage() -> AppLanguage {
         if let raw = UserDefaults.standard.string(forKey: storageKey),
            let saved = AppLanguage(rawValue: raw) {
-            language = saved
-        } else {
-            let preferred = Locale.preferredLanguages.first ?? "en"
-            language = preferred.hasPrefix("pt") ? .portuguese : .english
+            return saved
         }
+        let preferred = Locale.preferredLanguages.first ?? "en"
+        return preferred.hasPrefix("pt") ? .portuguese : .english
     }
 
-    private static func bundle(for language: AppLanguage) -> Bundle {
+    private nonisolated static func bundle(for language: AppLanguage) -> Bundle {
         guard let path = Bundle.main.path(forResource: language.rawValue, ofType: "lproj"),
               let bundle = Bundle(path: path) else {
             return .main
@@ -76,11 +84,11 @@ final class LocalizationManager: ObservableObject {
         return bundle
     }
 
-    func string(_ key: String, comment: String = "") -> String {
-        bundle.localizedString(forKey: key, value: nil, table: nil)
+    nonisolated static func string(_ key: String) -> String {
+        currentBundle.withLock { $0 }.localizedString(forKey: key, value: nil, table: nil)
     }
 }
 
 func L(_ key: String) -> String {
-    LocalizationManager.shared.string(key)
+    LocalizationManager.string(key)
 }

@@ -20,7 +20,7 @@ struct iMyScannerApp: App {
             .environmentObject(localizationManager)
             .preferredColorScheme(themeManager.preferredColorScheme)
             .id(localizationManager.language)
-            .tint(AppColor.accentOrange)
+            .tint(AppColor.accentPrimary)
             .alert(L("storage.failed"), isPresented: $storage.operationFailed) {
                 Button(L("action.close"), role: .cancel) {}
             }

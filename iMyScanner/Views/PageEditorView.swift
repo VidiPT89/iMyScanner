@@ -89,7 +89,7 @@ struct PageEditorView: View {
                             .padding(.horizontal, 16)
                             .background(
                                 viewModel.page.filter == filter
-                                    ? AnyView(LinearGradient(colors: [AppColor.accentOrange, AppColor.accentAmber], startPoint: .leading, endPoint: .trailing))
+                                    ? AnyView(LinearGradient(colors: [AppColor.accentPrimary, AppColor.accentSecondary], startPoint: .leading, endPoint: .trailing))
                                     : AnyView(AppColor.surfaceDark)
                             )
                             .foregroundStyle(viewModel.page.filter == filter ? .white : .primary)
@@ -127,7 +127,7 @@ struct PageEditorView: View {
                 Text(L(titleKey))
                     .font(AppTypography.caption())
             }
-            .foregroundStyle(AppColor.accentOrange)
+            .foregroundStyle(AppColor.accentPrimary)
         }
         .frame(maxWidth: .infinity)
         .accessibilityIdentifier(titleKey)

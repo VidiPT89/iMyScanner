@@ -12,7 +12,7 @@ import Foundation
 /// but not the page images themselves. Embedding the scanned images as
 /// inline `w:drawing` elements referencing `word/media/*` parts would be a
 /// reasonable follow-up if a richer export is needed later.
-final class DocxExportService {
+final class DocxExportService: Sendable {
     static let shared = DocxExportService()
 
     /// `pageTexts` overrides the stored OCR text per page (same order as `document.pages`),

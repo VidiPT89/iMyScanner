@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 check_dir=$(mktemp -d /tmp/imyscanner-types.XXXXXX)
 trap 'rm -rf "$check_dir"' EXIT
 sdk=$(xcrun --sdk iphonesimulator --show-sdk-path)
-xcrun swiftc -typecheck -swift-version 5 -target arm64-apple-ios16.0-simulator -sdk "$sdk" -module-cache-path "$check_dir/cache" \
+xcrun swiftc -typecheck -swift-version 6 -target arm64-apple-ios16.0-simulator -sdk "$sdk" -module-cache-path "$check_dir/cache" \
   iMyScanner/Models/*.swift \
   iMyScanner/Services/DocumentStorageService.swift iMyScanner/Services/DocxExportService.swift \
   iMyScanner/Services/ZipArchiveBuilder.swift iMyScanner/Services/LocalizationManager.swift \

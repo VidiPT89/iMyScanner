@@ -10,18 +10,18 @@ struct RecognizedLine {
 
 /// Extracts text from a scanned page image using the on-device Vision
 /// framework text recognizer. No data leaves the device.
-final class OCRService {
+final class OCRService: Sendable {
     static let shared = OCRService()
 
-    func recognizeText(in image: UIImage, completion: @escaping (String) -> Void) {
+    func recognizeText(in image: UIImage, completion: @escaping @MainActor @Sendable (String) -> Void) {
         guard let cgImage = image.cgImage else {
-            completion("")
+            Task { @MainActor in completion("") }
             return
         }
 
         DispatchQueue.global(qos: .userInitiated).async {
             let text = self.recognizeLines(in: cgImage).map(\.text).joined(separator: "\n")
-            DispatchQueue.main.async { completion(text) }
+            Task { @MainActor in completion(text) }
         }
     }
 

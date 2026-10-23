@@ -55,7 +55,7 @@ struct FolderListView: View {
                                 } label: {
                                     Label(L("action.rename"), systemImage: "pencil")
                                 }
-                                .tint(AppColor.accentOrange)
+                                .tint(AppColor.accentPrimary)
                             }
                         }
                     }

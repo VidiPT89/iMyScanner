@@ -54,6 +54,7 @@ struct DocumentScannerView: UIViewControllerRepresentable {
     }
 }
 
+@MainActor
 func isDocumentScanningAvailable() -> Bool {
     VNDocumentCameraViewController.isSupported
 }
@@ -81,6 +82,7 @@ struct PhotoLibraryPickerView: UIViewControllerRepresentable {
         Coordinator(onFinish: onFinish, onCancel: onCancel)
     }
 
+    @MainActor
     final class Coordinator: NSObject, PHPickerViewControllerDelegate {
         let onFinish: ([UIImage]) -> Void
         let onCancel: () -> Void
@@ -96,26 +98,26 @@ struct PhotoLibraryPickerView: UIViewControllerRepresentable {
                 return
             }
 
-            let providers = results.map { $0.itemProvider }
-            var images = [UIImage?](repeating: nil, count: providers.count)
-            let group = DispatchGroup()
-
-            for (index, provider) in providers.enumerated() where provider.canLoadObject(ofClass: UIImage.self) {
-                group.enter()
-                provider.loadObject(ofClass: UIImage.self) { object, _ in
-                    DispatchQueue.main.async {
-                        images[index] = object as? UIImage
-                        group.leave()
-                    }
+            // Loaded one after another on the main actor: keeps the picking order and
+            // avoids a shared array written from the providers' background callbacks.
+            let providers = results.map(\.itemProvider)
+            Task { @MainActor [onFinish, onCancel] in
+                var loaded: [UIImage] = []
+                for provider in providers where provider.canLoadObject(ofClass: UIImage.self) {
+                    if let image = await Self.loadImage(from: provider) { loaded.append(image) }
                 }
-            }
-
-            group.notify(queue: .main) { [onFinish, onCancel] in
-                let loaded = images.compactMap { $0 }
                 if loaded.isEmpty {
                     onCancel()
                 } else {
                     onFinish(loaded)
+                }
+            }
+        }
+
+        private static func loadImage(from provider: NSItemProvider) async -> UIImage? {
+            await withCheckedContinuation { continuation in
+                provider.loadObject(ofClass: UIImage.self) { object, _ in
+                    continuation.resume(returning: object as? UIImage)
                 }
             }
         }

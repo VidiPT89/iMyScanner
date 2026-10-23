@@ -4,7 +4,9 @@ import CoreImage.CIFilterBuiltins
 
 /// Applies non-destructive, entirely on-device CoreImage filters used to
 /// simulate "AI enhancement" without any network or ML model dependency.
-final class ImageEnhancementService {
+/// `@unchecked Sendable`: the only stored property is a `CIContext`, which
+/// Apple documents as thread-safe; filters are created per call.
+final class ImageEnhancementService: @unchecked Sendable {
     static let shared = ImageEnhancementService()
 
     private let context = CIContext()

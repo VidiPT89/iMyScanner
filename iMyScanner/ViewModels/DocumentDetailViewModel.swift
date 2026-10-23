@@ -90,7 +90,7 @@ final class DocumentDetailViewModel: ObservableObject {
     /// doing that synchronously on the main thread would freeze the UI while
     /// the share sheet is about to appear. `makeURLs` must not touch
     /// `self` — callers pass it a snapshot of whatever document state it needs.
-    private func export(_ makeURLs: @escaping () -> [URL]?) {
+    private func export(_ makeURLs: @escaping @Sendable () -> [URL]?) {
         guard !isExporting else { return }
         isExporting = true
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in

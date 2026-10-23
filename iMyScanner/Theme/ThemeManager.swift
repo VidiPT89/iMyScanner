@@ -18,6 +18,7 @@ enum AppThemeOption: String, CaseIterable, Codable {
 /// Persists and publishes the user's manual theme choice.
 /// Defaults to dark mode per product requirements, independent of the
 /// system appearance unless the user opts into "follow system".
+@MainActor
 final class ThemeManager: ObservableObject {
     static let shared = ThemeManager()
 

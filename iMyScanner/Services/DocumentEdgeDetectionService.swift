@@ -6,16 +6,16 @@ import Vision
 /// and no bundled ML model download. Used to seed the crop tool with a
 /// sensible initial crop for pages that never went through VisionKit's own
 /// scan-time edge detection (photo-library imports, "Browse Files" imports).
-final class DocumentEdgeDetectionService {
+final class DocumentEdgeDetectionService: Sendable {
     static let shared = DocumentEdgeDetectionService()
 
     /// Runs detection off the main thread and returns the result on the
     /// main thread. `image` should be a reasonably small preview-sized
     /// image; Vision's cost scales with pixel count and this is only ever
     /// used to seed an initial crop, not to produce final geometry.
-    func detectDocumentQuad(in image: UIImage, completion: @escaping (CropRect?) -> Void) {
+    func detectDocumentQuad(in image: UIImage, completion: @escaping @MainActor @Sendable (CropRect?) -> Void) {
         guard let cgImage = image.cgImage else {
-            completion(nil)
+            Task { @MainActor in completion(nil) }
             return
         }
 
@@ -32,13 +32,13 @@ final class DocumentEdgeDetectionService {
             do {
                 try handler.perform([request])
             } catch {
-                DispatchQueue.main.async { completion(nil) }
+                Task { @MainActor in completion(nil) }
                 return
             }
 
             guard let results = request.results,
                   let best = results.max(by: { $0.confidence < $1.confidence }) else {
-                DispatchQueue.main.async { completion(nil) }
+                Task { @MainActor in completion(nil) }
                 return
             }
 
@@ -52,7 +52,7 @@ final class DocumentEdgeDetectionService {
                 bottomRight: CGPoint(x: best.bottomRight.x, y: 1 - best.bottomRight.y)
             )
 
-            DispatchQueue.main.async { completion(cropRect) }
+            Task { @MainActor in completion(cropRect) }
         }
     }
 }

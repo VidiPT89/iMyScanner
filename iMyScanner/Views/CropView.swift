@@ -45,7 +45,7 @@ struct CropView: View {
                         bottomLeft: absolute(bottomLeft, origin: origin, size: size),
                         bottomRight: absolute(bottomRight, origin: origin, size: size)
                     )
-                    .stroke(AppColor.accentOrange, lineWidth: 2)
+                    .stroke(AppColor.accentPrimary, lineWidth: 2)
 
                     if activeHandle != nil {
                         ThirdsGridShape(
@@ -136,7 +136,7 @@ struct CropView: View {
     private var statusRow: some View {
         if isDetecting {
             HStack(spacing: 8) {
-                ProgressView().tint(AppColor.accentAmber)
+                ProgressView().tint(AppColor.accentSecondary)
                 Text(L("crop.detecting"))
                     .font(AppTypography.caption())
                     .foregroundStyle(.secondary)
@@ -191,7 +191,7 @@ struct CropView: View {
         let isActive = activeHandle == id
         return ZStack {
             Circle()
-                .fill(AppColor.accentAmber)
+                .fill(AppColor.accentSecondary)
                 .frame(width: isActive ? 32 : 24, height: isActive ? 32 : 24)
                 .overlay(Circle().stroke(.white, lineWidth: 2))
                 .shadow(color: .black.opacity(0.4), radius: isActive ? 4 : 2)
@@ -236,7 +236,7 @@ struct CropView: View {
                 Text(label)
                     .font(AppTypography.caption())
             }
-            .foregroundStyle(AppColor.accentOrange)
+            .foregroundStyle(AppColor.accentPrimary)
         }
         .accessibilityLabel(label)
     }
@@ -310,7 +310,7 @@ private struct MagnifierView: View {
             )
             .frame(width: diameter, height: diameter)
             .clipShape(Circle())
-            .overlay(Circle().stroke(AppColor.accentAmber, lineWidth: 2))
+            .overlay(Circle().stroke(AppColor.accentSecondary, lineWidth: 2))
             .shadow(color: .black.opacity(0.5), radius: 6)
         }
 }

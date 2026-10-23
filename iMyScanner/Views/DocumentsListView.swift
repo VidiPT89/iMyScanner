@@ -211,7 +211,7 @@ struct DocumentsListView: View {
                 .font(AppTypography.caption())
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(isSelected ? AppColor.accentOrange : AppColor.surfaceDark.opacity(0.6))
+                .background(isSelected ? AppColor.accentPrimary : AppColor.surfaceDark.opacity(0.6))
                 .foregroundStyle(isSelected ? .white : .primary)
                 .clipShape(Capsule())
         }
@@ -222,7 +222,7 @@ struct DocumentsListView: View {
             Spacer()
             Image(systemName: "doc.text.viewfinder")
                 .font(.system(size: 64, weight: .light))
-                .foregroundStyle(AppColor.accentOrange)
+                .foregroundStyle(AppColor.accentPrimary)
             Text(L("documents.empty.title"))
                 .font(AppTypography.headline())
             Text(L("documents.empty.subtitle"))
@@ -293,7 +293,7 @@ struct DocumentsListView: View {
                     .lineLimit(1)
                 Text(document.subtitleDescription)
                     .font(AppTypography.caption())
-                    .foregroundStyle(document.isImportedFile ? AppColor.accentOrange : .secondary)
+                    .foregroundStyle(document.isImportedFile ? AppColor.accentPrimary : .secondary)
             }
         }
         .buttonStyle(.plain)
@@ -326,7 +326,7 @@ struct DocumentsListView: View {
                         .foregroundStyle(.primary)
                     Text(document.subtitleDescription)
                         .font(AppTypography.caption())
-                        .foregroundStyle(document.isImportedFile ? AppColor.accentOrange : .secondary)
+                        .foregroundStyle(document.isImportedFile ? AppColor.accentPrimary : .secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
@@ -346,7 +346,7 @@ struct DocumentsListView: View {
             .font(.caption2)
             .foregroundStyle(.white)
             .padding(6)
-            .background(AppColor.accentOrange)
+            .background(AppColor.accentPrimary)
             .clipShape(Circle())
             .padding(6)
     }

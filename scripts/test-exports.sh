@@ -8,7 +8,7 @@ device=$(xcrun simctl list devices booted | grep -m1 -oE '[0-9A-F-]{36}') || { e
 work=$(mktemp -d /tmp/imyscanner-exports.XXXXXX)
 trap 'rm -rf "$work"' EXIT
 sdk=$(xcrun --sdk iphonesimulator --show-sdk-path)
-xcrun --sdk iphonesimulator swiftc -swift-version 5 -target arm64-apple-ios16.0-simulator -sdk "$sdk" -module-cache-path "$work/cache" \
+xcrun --sdk iphonesimulator swiftc -swift-version 6 -target arm64-apple-ios16.0-simulator -sdk "$sdk" -module-cache-path "$work/cache" \
   iMyScanner/Models/*.swift iMyScanner/Services/DocumentStorageService.swift iMyScanner/Services/OCRService.swift \
   iMyScanner/Services/PDFExportService.swift iMyScanner/Services/DocxExportService.swift \
   iMyScanner/Services/ZipArchiveBuilder.swift iMyScanner/Services/LocalizationManager.swift \
