@@ -12,7 +12,7 @@
 "onboarding.skip" = "Saltar";
 
 /* Documents list */
-"documents.title" = "As Minhas Digitalizações";
+"documents.title" = "Os Meus Documentos";
 "documents.scan" = "Digitalizar Documento";
 "documents.empty.title" = "Ainda sem digitalizações";
 "documents.empty.subtitle" = "Toque em Digitalizar Documento para capturar a sua primeira página.";
@@ -82,6 +82,7 @@
 "about.developer" = "Programador";
 "about.website" = "Website";
 "about.github" = "GitHub";
+"about.privacy" = "Política de Privacidade";
 
 /* Actions */
 "action.cancel" = "Cancelar";

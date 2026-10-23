@@ -17,6 +17,11 @@ final class DocumentsListViewModel: ObservableObject {
     private let storage = DocumentStorageService.shared
 
     init() {
+        #if DEBUG
+        if SampleDocuments.isRequested {
+            SampleDocuments.install(into: storage, portuguese: LocalizationManager.shared.language == .portuguese)
+        }
+        #endif
         loadDocuments()
         loadFolders()
         storage.removeOrphanedFiles()

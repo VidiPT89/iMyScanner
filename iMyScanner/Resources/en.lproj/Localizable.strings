@@ -82,6 +82,7 @@
 "about.developer" = "Developer";
 "about.website" = "Website";
 "about.github" = "GitHub";
+"about.privacy" = "Privacy Policy";
 
 /* Actions */
 "action.cancel" = "Cancel";

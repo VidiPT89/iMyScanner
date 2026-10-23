@@ -73,6 +73,7 @@ struct DocumentDetailView: View {
                         Image(systemName: "ellipsis.circle")
                     }
                     .accessibilityLabel(L("action.share"))
+                    .accessibilityIdentifier("document.menu")
                 }
             }
         }
@@ -174,6 +175,7 @@ struct DocumentDetailView: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("page.\(page.id.uuidString)")
         .contextMenu {
             if viewModel.canMovePage(page, by: -1) {
                 Button {

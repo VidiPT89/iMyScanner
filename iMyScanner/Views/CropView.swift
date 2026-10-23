@@ -100,28 +100,32 @@ struct CropView: View {
                     detectionFailed = false
                 }
 
-            HStack(spacing: 20) {
-                iconButton(system: "wand.and.stars", label: L("crop.auto")) {
-                    onRequestAutoDetect()
-                }
-                iconButton(system: "arrow.up.left.and.arrow.down.right", label: L("crop.resetFull")) {
-                    onRequestReset()
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                        setCorners(.fullFrame, animated: true)
+            // Tools and actions on separate rows: side by side, "Cancelar"/"Aplicar"
+            // were squeezed into broken syllables in Portuguese on iPhone.
+            VStack(spacing: 14) {
+                HStack(spacing: 40) {
+                    iconButton(system: "wand.and.stars", label: L("crop.auto")) {
+                        onRequestAutoDetect()
+                    }
+                    iconButton(system: "arrow.up.left.and.arrow.down.right", label: L("crop.resetFull")) {
+                        onRequestReset()
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                            setCorners(.fullFrame, animated: true)
+                        }
                     }
                 }
-                Spacer()
-                Button(L("action.cancel")) { onCancel() }
-                    .buttonStyle(SecondaryButtonStyle())
-                    .frame(maxWidth: 120)
-                Button(L("action.apply")) {
-                    onApply(CropRect(
-                        topLeft: topLeft, topRight: topRight,
-                        bottomLeft: bottomLeft, bottomRight: bottomRight
-                    ))
+                HStack(spacing: 12) {
+                    Button(L("action.cancel")) { onCancel() }
+                        .buttonStyle(SecondaryButtonStyle())
+                    Button(L("action.apply")) {
+                        onApply(CropRect(
+                            topLeft: topLeft, topRight: topRight,
+                            bottomLeft: bottomLeft, bottomRight: bottomRight
+                        ))
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .frame(maxWidth: 120)
+                .lineLimit(1)
             }
             .padding(AppMetrics.standardPadding)
         }

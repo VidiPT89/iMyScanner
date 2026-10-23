@@ -95,6 +95,7 @@ struct PageEditorView: View {
                             .foregroundStyle(viewModel.page.filter == filter ? .white : .primary)
                             .clipShape(Capsule())
                     }
+                    .accessibilityIdentifier("filter.\(filter.rawValue)")
                 }
             }
             .padding(.horizontal, AppMetrics.standardPadding)
@@ -129,6 +130,7 @@ struct PageEditorView: View {
             .foregroundStyle(AppColor.accentOrange)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier(titleKey)
     }
 }
 

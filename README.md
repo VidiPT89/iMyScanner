@@ -64,6 +64,8 @@
 
 Core regression checks: `sh scripts/test-core.sh`. Source checks: `sh scripts/check-types.sh`.
 Export/import checks on a booted iOS Simulator (needs `brew install poppler`): `sh scripts/test-exports.sh`.
+UI tests (page reordering, delete confirmation) run against built-in sample documents: `xcodebuild test -scheme iMyScanner -destination "platform=iOS Simulator,name=iPhone 17"`.
+App Store screenshots in English and Portuguese: run the same command with `TEST_RUNNER_STORE_SHOTS=1` and export the attachments with `xcrun xcresulttool export attachments`.
 See [review and validation limits](docs/review-2026-10-23.md).
 
 ```bash

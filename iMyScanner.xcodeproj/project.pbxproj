@@ -13,6 +13,7 @@
 		1B59CC1629434F3BBB1EBA83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA4C7F536959483F9BBD233A /* Assets.xcassets */; };
 		20CA6929C58746F6A9473EBC /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F58215A4104DDB82658128 /* Theme.swift */; };
 		32BFA7019B9743FD979BE65C /* ScannerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B772C4CF2F4E2393730328 /* ScannerCoordinator.swift */; };
+		34C226D9069B38CCA34FC8B0 /* SampleDocuments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57AF70E4B28B383A1DB28AC9 /* SampleDocuments.swift */; };
 		35E9100EB6B94A4EAEEF735D /* iMyScannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BE68AE211443DB871A271B /* iMyScannerApp.swift */; };
 		3954BD307358465FA2B4560C /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295EE5E5629D48AA87ACF96D /* DocumentDetailView.swift */; };
 		3EDD395C09DE49B98BD4D35D /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B4B4E14B6045BB96AE106E /* OnboardingView.swift */; };
@@ -26,10 +27,13 @@
 		83408368AA7940CD995A02F5 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27A31F4CDF44A3DAEB3008A /* ThemeManager.swift */; };
 		88C8CAD0DD73425FB7A77244 /* DocumentFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC00BE9E51E4F4DBC9EDC67 /* DocumentFolder.swift */; };
 		8DA178F785E8444198D14C59 /* DocxExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D7145B0C6C49248272E23A /* DocxExportService.swift */; };
+		989CBA6C5FC2DF0E6B53AFE3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A42C2FEFB02E990D690C961 /* Foundation.framework */; };
 		9A0889E680D2498882F82E36 /* DocumentEdgeDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68515807A3ED435FB6149775 /* DocumentEdgeDetectionService.swift */; };
 		9A27368D8B664E58B7CE7C6A /* DocumentStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98F20EE82CD4FF680A9E7CE /* DocumentStorageService.swift */; };
 		A1B2C3D4E5F647A8B9C0D1E2 /* FileImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F647A8B9C0D1E3 /* FileImportService.swift */; };
 		A1B2C3D4E5F647A8B9C0D1E4 /* QuickLookPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F647A8B9C0D1E5 /* QuickLookPreviewView.swift */; };
+		AE9A20D4E22EADD68FA488E4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DB47070963216162CD2BF197 /* PrivacyInfo.xcprivacy */; };
+		B58EADC3B09538E0B08E1499 /* iMyScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 630E3917940FC5997F8A1A8B /* iMyScannerUITests.swift */; };
 		B75E4C6530C2474D90971EDB /* DocumentsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C93A316F2E4C05BB2D8640 /* DocumentsListViewModel.swift */; };
 		BD617B7B78334CE88C281639 /* ZipArchiveBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF87EE779543409F40B449 /* ZipArchiveBuilder.swift */; };
 		BDFD90F859714AA0B8473852 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DDF804661D4AB1B8B06CAE /* AboutView.swift */; };
@@ -40,6 +44,16 @@
 		F3A36F0196CE4994A187C7C8 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D6ED656F8D496CADE7D55D /* PDFExportService.swift */; };
 		F6E7AAD68DA44FC4B210115D /* DocumentDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D84106CF92F467B9E3C65D9 /* DocumentDetailViewModel.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		882435B06035BF7B04BF23F1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D6B836638BC3493B9025868A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2E5769F8FD745BF86E5B3AD;
+			remoteInfo = iMyScanner;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		09F58215A4104DDB82658128 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -52,6 +66,9 @@
 		4D84106CF92F467B9E3C65D9 /* DocumentDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailViewModel.swift; sourceTree = "<group>"; };
 		4EB028762CFA422DBADA278C /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		4F39545AF28342A69342EADC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		57AF70E4B28B383A1DB28AC9 /* SampleDocuments.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SampleDocuments.swift; sourceTree = "<group>"; };
+		5A42C2FEFB02E990D690C961 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		630E3917940FC5997F8A1A8B /* iMyScannerUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = iMyScannerUITests.swift; sourceTree = "<group>"; };
 		68515807A3ED435FB6149775 /* DocumentEdgeDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEdgeDetectionService.swift; sourceTree = "<group>"; };
 		6F9BFE4F007243E2AED2D68E /* PageEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageEditorViewModel.swift; sourceTree = "<group>"; };
 		81B772C4CF2F4E2393730328 /* ScannerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerCoordinator.swift; sourceTree = "<group>"; };
@@ -66,6 +83,7 @@
 		A3E4BFB37947406096C660E9 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		AA4C7F536959483F9BBD233A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0BE68AE211443DB871A271B /* iMyScannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iMyScannerApp.swift; sourceTree = "<group>"; };
+		BAD3CD87CC23A7EF4D3DBA60 /* iMyScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iMyScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCBF8CD6D68343BA9645783F /* CropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropView.swift; sourceTree = "<group>"; };
 		C0C93A316F2E4C05BB2D8640 /* DocumentsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsListViewModel.swift; sourceTree = "<group>"; };
 		C0E9AECC72234B1F9BCEA3CC /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -74,6 +92,7 @@
 		CE4C5DB99738445283F86BBA /* OCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRService.swift; sourceTree = "<group>"; };
 		D1D6ED656F8D496CADE7D55D /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
 		D98F20EE82CD4FF680A9E7CE /* DocumentStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentStorageService.swift; sourceTree = "<group>"; };
+		DB47070963216162CD2BF197 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E03F690638EF45A384C7F35E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E716A32E72EA45C6AEDE2112 /* DocumentsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsListView.swift; sourceTree = "<group>"; };
 		E8EBAB0B8FA34F6CBDEFE66E /* ScanPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanPage.swift; sourceTree = "<group>"; };
@@ -81,6 +100,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		11F49C85B239227123BFAD1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				989CBA6C5FC2DF0E6B53AFE3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7CDBBC93B179459BB5F647CF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,6 +151,7 @@
 				4F39545AF28342A69342EADC /* Info.plist */,
 				0E287EE762174308BD4B24FB /* Localizable.strings */,
 				6A5C987CB26E4C50B777BD75 /* InfoPlist.strings */,
+				DB47070963216162CD2BF197 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -155,6 +183,8 @@
 			children = (
 				424F422F1CA5483BB3BD892D /* iMyScanner */,
 				576D9FB11C324B4FB7751642 /* Products */,
+				5D438E6A28BD8A5A2C08EDBE /* Frameworks */,
+				C8A7D9D2CF349F47A5FFCE9F /* iMyScannerUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -162,8 +192,17 @@
 			isa = PBXGroup;
 			children = (
 				4314C423C66242F790F9CCD8 /* iMyScanner.app */,
+				BAD3CD87CC23A7EF4D3DBA60 /* iMyScannerUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		5D438E6A28BD8A5A2C08EDBE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B24F3259796FAAC07ACB84A4 /* iOS */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		834C13DB7E3243F9BE9823CD /* Services */ = {
@@ -179,8 +218,26 @@
 				84D7145B0C6C49248272E23A /* DocxExportService.swift */,
 				C8CF87EE779543409F40B449 /* ZipArchiveBuilder.swift */,
 				A1B2C3D4E5F647A8B9C0D1E3 /* FileImportService.swift */,
+				57AF70E4B28B383A1DB28AC9 /* SampleDocuments.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		B24F3259796FAAC07ACB84A4 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				5A42C2FEFB02E990D690C961 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		C8A7D9D2CF349F47A5FFCE9F /* iMyScannerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				630E3917940FC5997F8A1A8B /* iMyScannerUITests.swift */,
+			);
+			name = iMyScannerUITests;
+			path = iMyScannerUITests;
 			sourceTree = "<group>";
 		};
 		D59F931250824FDFB249D9BD /* ViewModels */ = {
@@ -223,6 +280,24 @@
 			productReference = 4314C423C66242F790F9CCD8 /* iMyScanner.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F1AC47D23161EDFB0357B9CA /* iMyScannerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7724DE15D65388E0A45DBBE3 /* Build configuration list for PBXNativeTarget "iMyScannerUITests" */;
+			buildPhases = (
+				5C724FABDD028B8CF2C3D4DB /* Sources */,
+				11F49C85B239227123BFAD1C /* Frameworks */,
+				1F562DE65210F0C758E1849D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8B8F1D0E4A05D70C0155498F /* PBXTargetDependency */,
+			);
+			name = iMyScannerUITests;
+			productName = iMyScannerUITests;
+			productReference = BAD3CD87CC23A7EF4D3DBA60 /* iMyScannerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -253,11 +328,19 @@
 			projectRoot = "";
 			targets = (
 				D2E5769F8FD745BF86E5B3AD /* iMyScanner */,
+				F1AC47D23161EDFB0357B9CA /* iMyScannerUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1F562DE65210F0C758E1849D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		20FA3804CF304EF587C2DCA3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -265,6 +348,7 @@
 				1B59CC1629434F3BBB1EBA83 /* Assets.xcassets in Resources */,
 				4032EE9E74644BDFA7FC8466 /* Localizable.strings in Resources */,
 				C487F82BFDCC479284148BFC /* InfoPlist.strings in Resources */,
+				AE9A20D4E22EADD68FA488E4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,10 +388,28 @@
 				0F1CD5B282C5417DB24DD05F /* FolderListView.swift in Sources */,
 				A1B2C3D4E5F647A8B9C0D1E2 /* FileImportService.swift in Sources */,
 				A1B2C3D4E5F647A8B9C0D1E4 /* QuickLookPreviewView.swift in Sources */,
+				34C226D9069B38CCA34FC8B0 /* SampleDocuments.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C724FABDD028B8CF2C3D4DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B58EADC3B09538E0B08E1499 /* iMyScannerUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8B8F1D0E4A05D70C0155498F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = iMyScanner;
+			target = D2E5769F8FD745BF86E5B3AD /* iMyScanner */;
+			targetProxy = 882435B06035BF7B04BF23F1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		0E287EE762174308BD4B24FB /* Localizable.strings */ = {
@@ -331,6 +433,25 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		08841316A10C41FEC7F3BE28 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S769436W24;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iMyScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = iMyScanner;
+			};
+			name = Debug;
+		};
 		1783E07B7EAE4E59B72CE0BB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -381,6 +502,26 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1B74CFEBA15DB30BB1501B28 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S769436W24;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.iMyScannerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = iMyScanner;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -460,6 +601,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iMyScanner/Resources/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "iMyScanner needs camera access to scan your documents.";
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -490,6 +633,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iMyScanner/Resources/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "iMyScanner needs camera access to scan your documents.";
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -511,6 +656,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7724DE15D65388E0A45DBBE3 /* Build configuration list for PBXNativeTarget "iMyScannerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B74CFEBA15DB30BB1501B28 /* Release */,
+				08841316A10C41FEC7F3BE28 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A3C4E04034704885B47BAA87 /* Build configuration list for PBXProject "iMyScanner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

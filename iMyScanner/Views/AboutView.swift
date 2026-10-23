@@ -5,6 +5,7 @@ struct AboutView: View {
 
     private let websiteURL = URL(string: "https://ividi.dev")!
     private let githubURL = URL(string: "https://github.com/VidiPT89")!
+    private let privacyURL = URL(string: "https://ividi.dev/imyscanner/privacy")!
 
     var body: some View {
         ZStack {
@@ -32,6 +33,9 @@ struct AboutView: View {
                     }
                     Link(destination: githubURL) {
                         infoLinkRow(titleKey: "about.github", value: "github.com/VidiPT89")
+                    }
+                    Link(destination: privacyURL) {
+                        infoLinkRow(titleKey: "about.privacy", value: "ividi.dev")
                     }
                 }
                 .padding(AppMetrics.standardPadding)
