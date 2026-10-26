@@ -20,6 +20,11 @@ struct DocumentDetailView: View {
             AppColor.backgroundBlack.ignoresSafeArea()
 
             ScrollView {
+                if let invoice = viewModel.document.fiscalInvoice {
+                    InvoiceCardView(invoice: invoice) { viewModel.setExpenseCategory($0) }
+                        .padding(.horizontal, AppMetrics.standardPadding)
+                        .padding(.top, AppMetrics.standardPadding)
+                }
                 tagSection
                 LazyVGrid(columns: columns, spacing: AppMetrics.cardSpacing) {
                     ForEach(viewModel.document.pages) { page in
@@ -34,7 +39,7 @@ struct DocumentDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if viewModel.isExporting {
+                if viewModel.isExporting || viewModel.isReadingInvoice {
                     ProgressView()
                         .accessibilityLabel(L("document.exporting"))
                 } else {
@@ -53,6 +58,18 @@ struct DocumentDetailView: View {
                             }
                         } label: {
                             Label(L("document.addPages"), systemImage: "plus.rectangle.on.rectangle")
+                        }
+                        Button {
+                            viewModel.rescanInvoice()
+                        } label: {
+                            Label(L("invoice.read"), systemImage: "qrcode.viewfinder")
+                        }
+                        if viewModel.document.fiscalInvoice != nil {
+                            Button(role: .destructive) {
+                                viewModel.removeInvoice()
+                            } label: {
+                                Label(L("invoice.remove"), systemImage: "qrcode")
+                            }
                         }
                         Button {
                             viewModel.preparePDFShare()
@@ -107,6 +124,11 @@ struct DocumentDetailView: View {
         }
         .alert(L("document.exportFailed"), isPresented: $viewModel.exportFailed) {
             Button(L("action.close"), role: .cancel) {}
+        }
+        .alert(L("invoice.notFound"), isPresented: $viewModel.invoiceNotFound) {
+            Button(L("action.close"), role: .cancel) {}
+        } message: {
+            Text(L("invoice.notFound.message"))
         }
         .alert(L("action.rename"), isPresented: $isRenaming) {
             TextField(L("document.name.placeholder"), text: $newTitle)

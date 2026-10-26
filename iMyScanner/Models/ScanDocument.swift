@@ -52,6 +52,8 @@ struct ScanDocument: Identifiable, Codable {
     /// File name inside the storage service's imported-files directory.
     /// Only set when `documentKind` is `.importedFile`.
     var importedFileName: String?
+    /// Read from the AT QR code when one of the pages is a Portuguese invoice or receipt.
+    var fiscalInvoice: FiscalInvoice?
 
     init(
         id: UUID = UUID(),
@@ -62,7 +64,8 @@ struct ScanDocument: Identifiable, Codable {
         folderId: UUID? = nil,
         tags: [String] = [],
         documentKind: DocumentKind = .scanned,
-        importedFileName: String? = nil
+        importedFileName: String? = nil,
+        fiscalInvoice: FiscalInvoice? = nil
     ) {
         self.id = id
         self.title = title
@@ -73,10 +76,11 @@ struct ScanDocument: Identifiable, Codable {
         self.tags = tags
         self.documentKind = documentKind
         self.importedFileName = importedFileName
+        self.fiscalInvoice = fiscalInvoice
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, title, pages, createdAt, updatedAt, folderId, tags, documentKind, importedFileName
+        case id, title, pages, createdAt, updatedAt, folderId, tags, documentKind, importedFileName, fiscalInvoice
     }
 
     init(from decoder: Decoder) throws {
@@ -91,6 +95,7 @@ struct ScanDocument: Identifiable, Codable {
         // Documents saved before `documentKind` existed decode as `.scanned`.
         documentKind = try container.decodeIfPresent(DocumentKind.self, forKey: .documentKind) ?? .scanned
         importedFileName = try container.decodeIfPresent(String.self, forKey: .importedFileName)
+        fiscalInvoice = try container.decodeIfPresent(FiscalInvoice.self, forKey: .fiscalInvoice)
     }
 
     var isImportedFile: Bool {

@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @Environment(\.dismiss) private var dismiss
+    @AppStorage(FiscalQRService.userNIFKey) private var userNIF = ""
 
     var body: some View {
         NavigationStack {
@@ -28,6 +29,20 @@ struct SettingsView: View {
                         Text(L("settings.language.restartHint"))
                             .font(AppTypography.caption())
                             .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section {
+                    TextField(L("settings.nif.placeholder"), text: $userNIF)
+                        .keyboardType(.numberPad)
+                        .accessibilityIdentifier("settings.nif")
+                } header: {
+                    Text(L("settings.nif"))
+                } footer: {
+                    if !userNIF.isEmpty && !NIF.isValid(userNIF) {
+                        Text(L("settings.nif.invalid")).foregroundStyle(.red)
+                    } else {
+                        Text(L("settings.nif.footer"))
                     }
                 }
 

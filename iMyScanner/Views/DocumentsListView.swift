@@ -7,6 +7,7 @@ struct DocumentsListView: View {
     @State private var navigateToDocument: ScanDocument?
     @State private var isDetailPresented = false
     @State private var showFolders = false
+    @State private var showExpenses = false
     @State private var quickLookDocument: ScanDocument?
     @State private var isSharingImportedFile = false
     @State private var importedFileShareURL: URL?
@@ -73,6 +74,15 @@ struct DocumentsListView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        showExpenses = true
+                    } label: {
+                        Image(systemName: "eurosign.circle")
+                    }
+                    .accessibilityLabel(L("expenses.title"))
+                    .accessibilityIdentifier("expenses.open")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
                         showSettings = true
                     } label: {
                         Image(systemName: "gearshape")
@@ -112,6 +122,9 @@ struct DocumentsListView: View {
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
+            }
+            .sheet(isPresented: $showExpenses) {
+                ExpensesView(invoices: viewModel.invoiceDocuments)
             }
             .sheet(isPresented: $showFolders) {
                 FolderListView(viewModel: viewModel)
@@ -284,6 +297,12 @@ struct DocumentsListView: View {
                         importedFileBadgeIcon
                     }
                 }
+                // Bottom corner, so it doesn't cover the seller's name at the top of the page.
+                .overlay(alignment: .bottomTrailing) {
+                    if let invoice = document.fiscalInvoice {
+                        invoiceBadge(invoice)
+                    }
+                }
                 .frame(height: 150)
                 .clipped()
 
@@ -329,6 +348,9 @@ struct DocumentsListView: View {
                         .foregroundStyle(document.isImportedFile ? AppColor.accentPrimary : .secondary)
                 }
                 Spacer()
+                if let invoice = document.fiscalInvoice {
+                    invoiceBadge(invoice)
+                }
                 Image(systemName: "chevron.right")
                     .foregroundStyle(.secondary)
             }
@@ -349,6 +371,27 @@ struct DocumentsListView: View {
             .background(AppColor.accentPrimary)
             .clipShape(Circle())
             .padding(6)
+    }
+
+    /// Total and a warning dot when the invoice won't reach the user's e-Fatura.
+    private func invoiceBadge(_ invoice: FiscalInvoice) -> some View {
+        let warns: Bool = {
+            switch invoice.deductionStatus(userNIF: FiscalQRService.userNIF) {
+            case .noBuyerNIF, .otherNIF: return true
+            case .counts, .unknown: return false
+            }
+        }()
+        return HStack(spacing: 4) {
+            Image(systemName: warns ? "exclamationmark.circle.fill" : "qrcode")
+            Text(InvoiceFormat.euros(invoice.signedTotal))
+        }
+        .font(AppTypography.caption().weight(.semibold))
+        .foregroundStyle(.white)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(warns ? Color.orange : AppColor.accentPrimary)
+        .clipShape(Capsule())
+        .padding(6)
     }
 
     private func openDocument(_ document: ScanDocument) {

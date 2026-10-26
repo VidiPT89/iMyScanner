@@ -11,6 +11,9 @@ final class DocumentDetailViewModel: ObservableObject {
     /// thread. Multi-page documents can take a noticeable amount of time to
     /// render and zip, so the UI surfaces this instead of appearing to hang.
     @Published var isExporting = false
+    @Published var isReadingInvoice = false
+    /// Set after a manual "Read Invoice QR" that found no AT code.
+    @Published var invoiceNotFound = false
 
     private var savedDocument: ScanDocument
     private let storage = DocumentStorageService.shared
@@ -25,6 +28,46 @@ final class DocumentDetailViewModel: ObservableObject {
     func addPages(_ images: [UIImage]) {
         guard let pages = storage.savePages(images) else { return }
         document.pages.append(contentsOf: pages)
+        commit()
+        if document.fiscalInvoice == nil { readInvoice(from: pages, reportMissing: false) }
+    }
+
+    /// Looks for the AT QR code again, e.g. after recropping a page where it was cut off.
+    func rescanInvoice() {
+        readInvoice(from: document.pages, reportMissing: true)
+    }
+
+    private func readInvoice(from pages: [ScanPage], reportMissing: Bool) {
+        guard !isReadingInvoice else { return }
+        isReadingInvoice = true
+        let storage = storage
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let invoice = FiscalQRService.shared.detectInvoice(in: pages, storage: storage)
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.isReadingInvoice = false
+                guard var invoice else {
+                    if reportMissing { self.invoiceNotFound = true }
+                    return
+                }
+                // A rescan of the same invoice keeps the category the user chose.
+                if let previous = self.document.fiscalInvoice, previous.atcud == invoice.atcud {
+                    invoice.category = previous.category
+                }
+                self.document.fiscalInvoice = invoice
+                self.commit()
+            }
+        }
+    }
+
+    func setExpenseCategory(_ category: ExpenseCategory) {
+        guard document.fiscalInvoice?.category != category else { return }
+        document.fiscalInvoice?.category = category
+        commit()
+    }
+
+    func removeInvoice() {
+        document.fiscalInvoice = nil
         commit()
     }
 

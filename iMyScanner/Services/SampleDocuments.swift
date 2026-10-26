@@ -1,5 +1,6 @@
 #if DEBUG
 import UIKit
+import CoreImage.CIFilterBuiltins
 
 /// Debug-only fixtures for the UI tests and App Store screenshots. Launching with
 /// `-uiTestSampleData` replaces the library with a few realistic documents in the
@@ -27,16 +28,27 @@ enum SampleDocuments {
             return ScanDocument(title: title, pages: pages, createdAt: date, updatedAt: date, folderId: folder?.id, tags: tags)
         }
 
+        // Invoices go through the real Vision QR detection, like a camera scan.
+        func invoiceDocument(_ title: String, _ pages: [ScanPage], folder: DocumentFolder?, tags: [String], minutesAgo: Double,
+                             category: ExpenseCategory = .generalFamily) -> ScanDocument {
+            var scanned = document(title, pages, folder: folder, tags: tags, minutesAgo: minutesAgo)
+            scanned.fiscalInvoice = FiscalQRService.shared.detectInvoice(in: pages, storage: storage)
+            scanned.fiscalInvoice?.category = category
+            return scanned
+        }
+
         let documents = [
-            document(pt ? "Fatura da eletricidade" : "Electricity bill",
-                     pages([invoice(pt: pt), invoiceDetails(pt: pt)]),
-                     folder: invoices, tags: pt ? ["casa", "2026"] : ["home", "2026"], minutesAgo: 5),
+            invoiceDocument(pt ? "Fatura da eletricidade" : "Electricity bill",
+                            pages([invoice(pt: pt), invoiceDetails(pt: pt)]),
+                            folder: invoices, tags: pt ? ["casa", "2026"] : ["home", "2026"], minutesAgo: 5),
+            invoiceDocument(pt ? "Farmácia" : "Pharmacy", pages([pharmacy(pt: pt)], filter: .enhance),
+                            folder: invoices, tags: [], minutesAgo: 30, category: .health),
             document(pt ? "Contrato de arrendamento" : "Lease agreement",
                      pages([letter(pt: pt, page: 1), letter(pt: pt, page: 2), letter(pt: pt, page: 3)]),
                      folder: home, tags: pt ? ["contratos"] : ["contracts"], minutesAgo: 90),
-            document(pt ? "Recibo do supermercado" : "Grocery receipt",
-                     pages([receipt(pt: pt)], filter: .enhance),
-                     folder: invoices, tags: [], minutesAgo: 60 * 26),
+            invoiceDocument(pt ? "Recibo do supermercado" : "Grocery receipt",
+                            pages([receipt(pt: pt)], filter: .enhance),
+                            folder: invoices, tags: [], minutesAgo: 60 * 26),
             document(pt ? "Notas da reunião" : "Meeting notes",
                      pages([notes(pt: pt)], filter: .blackAndWhite),
                      folder: work, tags: pt ? ["projeto"] : ["project"], minutesAgo: 60 * 50)
@@ -107,7 +119,10 @@ enum SampleDocuments {
             text(pt ? "Total a pagar" : "Total due", at: CGPoint(x: 150, y: 1190), size: 40, weight: .bold)
             text(pt ? "78,93 €" : "€78.93", at: CGPoint(x: 790, y: 1186), size: 46, weight: .heavy, color: accent, width: 300, align: .right)
             text(pt ? "Pagamento por Multibanco\nEntidade 21312  ·  Referência 482 105 337" : "Pay by bank transfer\nIBAN PT50 0002 0123 1234 5678 9015 4",
-                 at: CGPoint(x: 110, y: 1360), size: 28, color: muted)
+                 at: CGPoint(x: 110, y: 1360), size: 28, color: muted, width: 700)
+            text("NIF 503 742 007  ·  ATCUD JJ3RBV7M-10482", at: CGPoint(x: 110, y: 1500), size: 24, color: muted, width: 700)
+            qrCode("A:503742007*B:234567899*C:PT*D:FT*E:N*F:20261023*G:FT 2026/10482*H:JJ3RBV7M-10482*I1:PT*I7:64.18*I8:14.75*N:14.75*O:78.93*Q:Ab1c*R:1234",
+                   in: CGRect(x: 870, y: 1340, width: 260, height: 260))
         }
     }
 
@@ -157,7 +172,7 @@ enum SampleDocuments {
     private static func receipt(pt: Bool) -> UIImage {
         render(size: CGSize(width: 900, height: 1754)) { _ in
             text(pt ? "MERCADO DO BAIRRO" : "CORNER MARKET", at: CGPoint(x: 60, y: 110), size: 46, weight: .heavy, width: 780, align: .center)
-            text(pt ? "NIF 509 123 456 · Cascais" : "VAT 509 123 456 · Cascais", at: CGPoint(x: 60, y: 180), size: 26, color: muted, width: 780, align: .center)
+            text(pt ? "NIF 509 123 457 · Cascais" : "VAT 509 123 457 · Cascais", at: CGPoint(x: 60, y: 180), size: 26, color: muted, width: 780, align: .center)
             let items = pt
                 ? [("Pão de forma", "1,89"), ("Leite meio-gordo x6", "4,74"), ("Maçãs 1,2 kg", "2,28"), ("Café moído", "3,99"),
                    ("Azeite virgem extra", "6,49"), ("Queijo flamengo", "2,79"), ("Água 6 x 1,5 L", "1,74")]
@@ -173,7 +188,44 @@ enum SampleDocuments {
             text(pt ? "23,92 €" : "€23.92", at: CGPoint(x: 540, y: 850), size: 44, weight: .heavy, width: 300, align: .right)
             text(pt ? "Cartão · 23/10/2026 18:42\nObrigado pela preferência!" : "Card · 23 Oct 2026 18:42\nThank you for shopping with us!",
                  at: CGPoint(x: 60, y: 960), size: 28, color: muted, width: 780, align: .center)
+            text(pt ? "Contribuinte: consumidor final" : "Customer: final consumer", at: CGPoint(x: 60, y: 1070), size: 26, color: muted, width: 780, align: .center)
+            qrCode("A:509123457*B:999999990*C:PT*D:FS*E:N*F:20261023*G:FS A/88*H:K7PQ2M4X-88*I1:PT*I3:22.57*I4:1.35*N:1.35*O:23.92*Q:Zx9a*R:2211",
+                   in: CGRect(x: 300, y: 1140, width: 300, height: 300))
         }
+    }
+
+    private static func pharmacy(pt: Bool) -> UIImage {
+        render(size: CGSize(width: 900, height: 1754)) { _ in
+            text(pt ? "FARMÁCIA CENTRAL" : "CENTRAL PHARMACY", at: CGPoint(x: 60, y: 110), size: 46, weight: .heavy, color: accent, width: 780, align: .center)
+            text("NIF 501 001 239 · Porto", at: CGPoint(x: 60, y: 180), size: 26, color: muted, width: 780, align: .center)
+            text(pt ? "Fatura-recibo FR 1/5\nCliente: NIF 234 567 899" : "Invoice-receipt FR 1/5\nCustomer VAT no. 234 567 899",
+                 at: CGPoint(x: 60, y: 260), size: 28, width: 780, align: .center)
+            let items = pt ? [("Ibuprofeno 400 mg", "4,95"), ("Vitamina D", "8,90"), ("Soro fisiológico", "5,65")]
+                           : [("Ibuprofen 400 mg", "4.95"), ("Vitamin D", "8.90"), ("Saline solution", "5.65")]
+            for (index, item) in items.enumerated() {
+                let y = 420 + CGFloat(index) * 70
+                text(item.0, at: CGPoint(x: 60, y: y), size: 32, width: 560)
+                text(item.1, at: CGPoint(x: 600, y: y), size: 32, width: 240, align: .right)
+            }
+            rule(y: 650, from: 60, to: 840)
+            text("TOTAL", at: CGPoint(x: 60, y: 680), size: 44, weight: .heavy)
+            text(pt ? "19,50 €" : "€19.50", at: CGPoint(x: 540, y: 680), size: 44, weight: .heavy, width: 300, align: .right)
+            text(pt ? "IVA 6% incluído: 1,10 €" : "Includes 6% VAT: €1.10", at: CGPoint(x: 60, y: 760), size: 26, color: muted, width: 780)
+            qrCode("A:501001239*B:234567899*C:PT*D:FR*E:N*F:20261022*G:FR 1/5*H:FARM2026-5*I1:PT*I3:18.40*I4:1.10*N:1.10*O:19.50*Q:Rt5e*R:3301",
+                   in: CGRect(x: 300, y: 880, width: 300, height: 300))
+        }
+    }
+
+    /// Draws a real QR code, so the sample pages exercise the same detector as a scan.
+    private static func qrCode(_ payload: String, in rect: CGRect) {
+        let filter = CIFilter.qrCodeGenerator()
+        filter.message = Data(payload.utf8)
+        filter.correctionLevel = "M"
+        guard let output = filter.outputImage,
+              let cgImage = CIContext().createCGImage(output, from: output.extent) else { return }
+        let context = UIGraphicsGetCurrentContext()
+        context?.interpolationQuality = .none
+        UIImage(cgImage: cgImage).draw(in: rect)
     }
 
     private static func notes(pt: Bool) -> UIImage {

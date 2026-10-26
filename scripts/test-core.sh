@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 test_dir=$(mktemp -d /tmp/imyscanner-tests.XXXXXX)
 trap 'rm -rf "$test_dir"' EXIT
 xcrun swiftc -swift-version 6 -module-cache-path "$test_dir/cache" \
-  iMyScanner/Models/ScanPage.swift iMyScanner/Models/ScanDocument.swift \
+  iMyScanner/Models/ScanPage.swift iMyScanner/Models/ScanDocument.swift iMyScanner/Models/FiscalInvoice.swift \
   iMyScanner/Services/ZipArchiveBuilder.swift iMyScanner/Services/DocxExportService.swift \
   tests/main.swift -o "$test_dir/tests"
 "$test_dir/tests" "$test_dir"

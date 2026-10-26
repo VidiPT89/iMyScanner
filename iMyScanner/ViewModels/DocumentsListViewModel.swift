@@ -35,9 +35,14 @@ final class DocumentsListViewModel: ObservableObject {
         }
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !query.isEmpty else { return result }
+        let digits = query.filter(\.isNumber)
         return result.filter { document in
             document.title.lowercased().contains(query) ||
-            document.tags.contains { $0.lowercased().contains(query) }
+            document.tags.contains { $0.lowercased().contains(query) } ||
+            // Invoices are also found by the seller's NIF or the ATCUD.
+            document.fiscalInvoice.map { invoice in
+                (digits.count >= 3 && invoice.issuerNIF.contains(digits)) || invoice.atcud.lowercased().contains(query)
+            } ?? false
         }
     }
 
@@ -58,10 +63,25 @@ final class DocumentsListViewModel: ObservableObject {
         guard let pages = storage.savePages(images), !pages.isEmpty else { return }
 
         let title = defaultTitle()
-        let document = ScanDocument(title: title, pages: pages, folderId: selectedFolderId)
-        documents.insert(document, at: 0)
-        persist()
-        lastImportedDocument = documents.first { $0.id == document.id }
+        let folderId = selectedFolderId
+        // Barcode detection on full-size scans takes a moment, so it runs off the main
+        // thread; the document opens once it's known whether a page is an invoice.
+        DispatchQueue.global(qos: .userInitiated).async { [storage, weak self] in
+            let invoice = FiscalQRService.shared.detectInvoice(in: pages, storage: storage)
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                let document = ScanDocument(title: invoice.map(InvoiceFormat.defaultTitle) ?? title, pages: pages,
+                                            folderId: folderId, fiscalInvoice: invoice)
+                self.documents.insert(document, at: 0)
+                self.persist()
+                self.lastImportedDocument = self.documents.first { $0.id == document.id }
+            }
+        }
+    }
+
+    /// Documents whose pages include a Portuguese invoice, for the Expenses screen.
+    var invoiceDocuments: [(title: String, invoice: FiscalInvoice)] {
+        documents.compactMap { document in document.fiscalInvoice.map { (document.title, $0) } }
     }
 
     /// Imports files picked via "Browse Files": images are combined into one
@@ -82,11 +102,16 @@ final class DocumentsListViewModel: ObservableObject {
             var createdDocuments: [ScanDocument] = []
 
             if !outcome.combinedPages.isEmpty {
-                createdDocuments.append(ScanDocument(title: defaultTitle, pages: outcome.combinedPages, folderId: selectedFolderId))
+                let invoice = FiscalQRService.shared.detectInvoice(in: outcome.combinedPages, storage: storage)
+                createdDocuments.append(ScanDocument(title: invoice.map(InvoiceFormat.defaultTitle) ?? defaultTitle,
+                                                     pages: outcome.combinedPages, folderId: selectedFolderId,
+                                                     fiscalInvoice: invoice))
             }
 
             for pdf in outcome.pdfDocuments {
-                createdDocuments.append(ScanDocument(title: pdf.title, pages: pdf.pages, folderId: selectedFolderId))
+                let invoice = FiscalQRService.shared.detectInvoice(in: pdf.pages, storage: storage)
+                createdDocuments.append(ScanDocument(title: pdf.title, pages: pdf.pages, folderId: selectedFolderId,
+                                                     fiscalInvoice: invoice))
             }
 
             for imported in outcome.importedFiles {

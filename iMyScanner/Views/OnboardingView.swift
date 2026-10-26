@@ -6,6 +6,7 @@ struct OnboardingView: View {
 
     private let pages: [(icon: String, titleKey: String, subtitleKey: String)] = [
         ("doc.viewfinder", "onboarding.scan.title", "onboarding.scan.subtitle"),
+        ("qrcode.viewfinder", "onboarding.invoices.title", "onboarding.invoices.subtitle"),
         ("crop", "onboarding.edit.title", "onboarding.edit.subtitle"),
         ("wand.and.stars", "onboarding.enhance.title", "onboarding.enhance.subtitle"),
         ("lock.shield", "onboarding.privacy.title", "onboarding.privacy.subtitle")

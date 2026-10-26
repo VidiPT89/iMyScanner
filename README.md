@@ -1,11 +1,14 @@
 # 📄 iMyScanner
 
-> An elegant iOS document scanner with manual and on-device AI-powered editing.
+> An iOS document scanner for Portuguese paperwork: it reads the AT QR code on invoices and tells you whether each one counts for your IRS.
 
 [Report Bug](https://github.com/VidiPT89/iMyScanner/issues) · [Request Feature](https://github.com/VidiPT89/iMyScanner/issues)
 
 ## ✨ Features
 
+- ✅ Portuguese invoices: reads the AT QR code (ATCUD, Portaria 195/2020) on device and shows seller NIF, date, VAT and total
+- ✅ IRS check: warns when an invoice was issued without a NIF or to someone else's NIF; NIF check-digit validation; flags QR amounts that don't add up
+- ✅ Expenses: the year's invoices totalled by e-Fatura category (credit notes subtracted), with CSV export; search by seller NIF or ATCUD
 - ✅ Multi-page document scanning with automatic edge detection (VisionKit)
 - ✅ On-device text recognition (OCR) with copy-to-clipboard
 - ✅ Manual crop with draggable corner handles, 90° rotation
@@ -27,6 +30,7 @@
 | Architecture | MVVM |
 | Scanning | VisionKit (`VNDocumentCameraViewController`) |
 | OCR | Vision (`VNRecognizeTextRequest`) |
+| Invoice QR codes | Vision (`VNDetectBarcodesRequest`), Core Image `CIDetector` fallback |
 | Image Processing | Core Image |
 | PDF Export | `UIGraphicsPDFRenderer` + Core Text (searchable text layer) |
 | PDF Import | PDFKit |
@@ -64,7 +68,7 @@
 
 Core regression checks: `sh scripts/test-core.sh`. Source checks: `sh scripts/check-types.sh`.
 Export/import checks on a booted iOS Simulator (needs `brew install poppler`): `sh scripts/test-exports.sh`.
-UI tests (page reordering, delete confirmation) run against built-in sample documents: `xcodebuild test -scheme iMyScanner -destination "platform=iOS Simulator,name=iPhone 17"`.
+UI tests (page reordering, delete confirmation, invoice QR reading and expenses) run against built-in sample documents: `xcodebuild test -scheme iMyScanner -destination "platform=iOS Simulator,name=iPhone 17"`.
 App Store screenshots in English and Portuguese: run the same command with `TEST_RUNNER_STORE_SHOTS=1` and export the attachments with `xcrun xcresulttool export attachments`.
 See [review and validation limits](docs/review-2026-10-23.md).
 
